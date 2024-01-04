@@ -1,0 +1,184 @@
+html {
+  text-align:center;
+  font-family: Arial, Helvetica, sans-serif;
+}
+body {
+  text-align:center;
+  margin: 0 auto;
+}
+div.seite{
+  text-align:center;
+  margin: 0 auto;
+  font-size: 12px;
+}
+div.kachel{
+  width:100%;
+  background-color: lightgray;
+  border-radius:25px;
+  padding:2px;
+  text-align:center;
+  font-size:12px;
+}
+button{
+  font-size: 12px;
+}
+table{
+  width: 100%;
+  border-collapse: collapse;
+  padding: 2px;
+  font-size: 12px;
+}
+table.nav{
+  padding: 2px;
+  font-size: 12px;
+  margin-left: auto; 
+  margin-right: auto;
+}
+tr {
+  text-align:center;
+  padding: 2px;
+}
+tr.diagramm {
+  width:100%;
+  text-align:center;
+  height:50px;
+}
+td.zwei {
+  text-align:center;
+  padding: 2px;
+  width: 50%;
+}
+td.drei {
+  text-align:center;
+  padding: 2px;
+  width: 33%;
+}
+td.vier {
+  text-align:center;
+  padding: 2px;
+  width: 25%;
+}
+td.fuenf {
+  text-align:center;
+  padding: 2px;
+  width: 20%;
+}
+td.dreiDiagramm {
+  text-align:center;
+  width: 33%;
+  height:50px;
+}
+table.zweiBorderHalb{
+  width: 50%;
+  border-collapse: collapse;
+  border: 1px solid darkslategrey;
+  padding: 2px;
+}
+table.zweiBorder{
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid darkslategrey;
+  padding: 6px;
+}
+tr.zweiBorder{
+  border: 1px solid darkslategrey;
+  text-align:center;
+  padding: 2px;
+}
+td.zweiBorder{
+  border: 1px solid darkslategrey;
+  text-align:center;
+  padding: 2px;
+  width: 50%;
+}
+table.fuenfBorder{
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid darkslategrey;
+  padding: 6px;
+}
+tr.fuenfBorder{
+  border: 1px solid darkslategrey;
+  text-align:center;
+  padding: 2px;
+}
+td.fuenfBorder{
+  border: 1px solid darkslategrey;
+  text-align:center;
+  padding: 2px;
+  width: 20%;
+}
+table.sechsBorder{
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid darkslategrey;
+  padding: 6px;
+}
+tr.sechsBorder{
+  border: 1px solid darkslategrey;
+  text-align:center;
+  padding: 2px;
+}
+td.sechsBorder{
+  border: 1px solid darkslategrey;
+  text-align:center;
+  padding: 2px;
+  width: 20%;
+}
+.diagramm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+}
+label {
+  font-weight: bold;
+}
+input {
+  text-align: center;
+}
+
+#management {
+  display: block;
+}
+#übersicht {
+    display: none;
+}
+#übersicht2 {
+  display: none;
+}
+#export {
+  display: none;
+}
+
+.button-10 {
+  align-items: center;
+  padding: 6px 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+  border-radius: 6px;
+  border: none;
+
+  color: #fff;
+  background-color: rgb(0, 162, 255);
+   background-origin: border-box;
+  box-shadow: 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-10_nav {
+  align-items: center;
+  padding: 6px 12px;
+  background-color: rgb(0, 162, 255);
+  font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+  border-radius: 6px;
+  border: none;
+
+  color: #fff;
+   background-origin: border-box;
+  box-shadow: 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
