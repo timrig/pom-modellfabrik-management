@@ -16,20 +16,8 @@ const topic_auftragV3 = 'auftrag/v3';
 var mqttServer;
 var mqttUser;
 var mqttPassword;
-var mqttLinie;
-var mqttStation;
 
 function connectMQTT() {
-  mqttServer = document.getElementById("mqttServer").value;
-  localStorage.setItem("mqttServer", mqttServer);
-  console.log(mqttServer);
-  mqttUser = document.getElementById("mqttUser").value;
-  localStorage.setItem("mqttUser", mqttUser);
-  console.log(mqttUser);
-  mqttPassword = document.getElementById("mqttPassword").value;
-  localStorage.setItem("mqttPassword", mqttPassword);
-  console.log(mqttPassword);
-
   if( mqttServer === "" ||
       mqttUser === "" ||
       mqttPassword === ""
@@ -38,12 +26,10 @@ function connectMQTT() {
   }
   else {
     document.getElementById("management").style.display = "block";
-    document.getElementById("mqtt").style.display = "none";
     document.getElementById("übersicht").style.display = "none";
     document.getElementById("übersicht2").style.display = "none";
     document.getElementById("export").style.display = "none";
     document.getElementById("btnManagement").style.backgroundColor = "#d3d3d3";
-    document.getElementById("btnMqtt").style.backgroundColor = "#00a2ff";
     document.getElementById("btnUebersicht").style.backgroundColor = "#00a2ff";
     document.getElementById("btnUebersicht2").style.backgroundColor = "#00a2ff";
     document.getElementById("btnExport").style.backgroundColor = "#00a2ff";
