@@ -131,12 +131,10 @@ function startBtn() {
     }
     console.log("Schicht gestartet!");
     document.getElementById("management").style.display = "none";
-    document.getElementById("mqtt").style.display = "none";
     document.getElementById("übersicht").style.display = "block";
     document.getElementById("übersicht2").style.display = "block";
     document.getElementById("export").style.display = "none";
     document.getElementById("btnManagement").style.backgroundColor = "#00a2ff";
-    document.getElementById("btnMqtt").style.backgroundColor = "#00a2ff";
     document.getElementById("btnUebersicht").style.backgroundColor = "#00a2ff";
     document.getElementById("btnUebersicht2").style.backgroundColor = "#d3d3d3";
     document.getElementById("btnExport").style.backgroundColor = "#00a2ff";
