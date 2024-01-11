@@ -327,7 +327,7 @@ function durchTbl(linie,pos,id) {
 //Durchschnitt der Durchlaufzeiten
 function durchZeiten(dlz) {
   durchZeit+=dlz;
-  durchZeitMW=durchZeit/count;
+  durchZeitMW=Math.round(durchZeit/count);
   console.log("Durchschnittliche Durchlaufzeit: " + durchZeitMW);
   document.getElementById("durchZeit").innerHTML=durchZeitMW.toFixed(2);
   count++;

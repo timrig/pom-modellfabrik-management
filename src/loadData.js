@@ -34,6 +34,7 @@ async function getLoadData() {
     personal=result.value[0].MitarbeiterProSchicht;
     krankheit=result.value[0].Krankheitsfälle;
     unfallfrei=result.value[0].Unfallfrei;
+    durchZeitMW=result.value[0].DDLZ;
     personalVerf=((personal-krankheit)/personal*100).toFixed(2);
     document.getElementById("personalVerf").innerHTML=personalVerf;
     document.getElementById("unfallfreiSeit").innerHTML=unfallfrei;
