@@ -6,10 +6,10 @@ const topic_ausschussS1 = 'ausschuss/s1';
 const topic_ausschussS2 = 'ausschuss/s2';
 const topic_ausschussS3 = 'ausschuss/s3';
 const topic_rep = 'rep';
-const topic_dlzL11 = 'l1/dlz/1';
-const topic_dlzL12 = 'l1/dlz/2';
-const topic_dlzL21 = 'l2/dlz/1';
-const topic_dlzL22 = 'l2/dlz/2';
+const topic_dlzL111 = 'l1/dlz/1/1';
+const topic_dlzL121 = 'l1/dlz/2/1';
+const topic_dlzL112 = 'l1/dlz/1/2';
+const topic_dlzL122 = 'l1/dlz/2/2';
 const topic_auftragV2 = 'auftrag/v2';
 const topic_auftragV3 = 'auftrag/v3';
 
@@ -105,15 +105,13 @@ function mqttSub(server,user,pw) {
         else if(message.payloadString==topic_rep) {
             ausschussTeile(0);
         }
-        else if (message.destinationName === topic_dlzL11 || message.destinationName === topic_dlzL12) {
+        else if (message.destinationName === topic_dlzL111 || message.destinationName === topic_dlzL112) {
             var id=String(message.payloadString);
-            if(message.destinationName  === topic_dlzL11) durchTbl(1,1,id);
-            else durchTbl(1,2,id);
+            durchTbl(1,1,id);
         }
-        else if (message.destinationName === topic_dlzL21 || message.destinationName === topic_dlzL22) {
+        else if (message.destinationName === topic_dlzL121 || message.destinationName === topic_dlzL122) {
             var id=String(message.payloadString);
-            if(message.destinationName  === topic_dlzL21) durchTbl(2,1,id);
-            else durchTbl(2,2,id);
+            durchTbl(1,2,id);
         }
         else if (message.destinationName === topic_auftragV2 || message.destinationName === topic_auftragV3) {
             var nachricht=String(message.payloadString);
