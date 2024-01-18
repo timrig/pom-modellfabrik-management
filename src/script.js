@@ -45,6 +45,8 @@ var ivlV3=0;
 var schichtende=true;
 var abfrageAuftragV2=false;
 var abfrageAuftragV3=false;
+var dlzBuffer;
+var abfrageDLZ=false;
 
 //Soll Parameter
 function sollBtn() {
@@ -217,6 +219,16 @@ function sollProZeit(v) {
 function fertig(variante) {
   if(variante==1) {
     istAnzV1++;
+    if(dlzBuffer > 0) {
+      dlz = (new Date().getTime()-dlzBuffer)/1000;
+      dlzBuffer = 0;
+      var table = document.getElementById("durchTbl");
+      var row = table.rows[table.rows.length-1];
+      var cell = row.insertCell(2);
+      cell.classList.add("dreiBorder");
+      cell.innerHTML = dlz.toFixed(2) + " Sekunden";
+      durchZeiten(dlz);
+    }
   }
   else if(variante==2) {
     istAnzV2++;
@@ -311,16 +323,16 @@ function durchTbl(linie,pos,id) {
   else if(pos===2 && zeitR1[linie + "," + idStr]>0) {
     console.log("Fertigungszeit für RFID " + idStr + " an Linie " + linie + " gespeichert");
     dlz = (new Date().getTime() - zeitR1[linie + "," + idStr]) / 1000;
+    dlzBuffer = zeitR1[linie + "," + idStr];
     zeitR1[linie + "," + idStr]=0;
     var table = document.getElementById("durchTbl");
     var newRow = table.insertRow(table.rows.length);
     var cell = newRow.insertCell(0);
-    cell.classList.add("zweiBorder");
+    cell.classList.add("dreiBorder");
     cell.innerHTML = "Linie: " + linie;
     var cell = newRow.insertCell(1);
-    cell.classList.add("zweiBorder");
+    cell.classList.add("dreiBorder");
     cell.innerHTML = dlz.toFixed(2) + " Sekunden";
-    durchZeiten(dlz);
   }
 }
 

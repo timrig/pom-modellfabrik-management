@@ -80,7 +80,18 @@ table.zweiBorder{
   border: 1px solid darkslategrey;
   padding: 6px;
 }
+table.dreiBorder{
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid darkslategrey;
+  padding: 6px;
+}
 tr.zweiBorder{
+  border: 1px solid darkslategrey;
+  text-align:center;
+  padding: 2px;
+}
+tr.dreiBorder{
   border: 1px solid darkslategrey;
   text-align:center;
   padding: 2px;
@@ -90,6 +101,12 @@ td.zweiBorder{
   text-align:center;
   padding: 2px;
   width: 50%;
+}
+td.dreiBorder{
+  border: 1px solid darkslategrey;
+  text-align:center;
+  padding: 2px;
+  width: 33.33%;
 }
 table.fuenfBorder{
   width: 100%;
