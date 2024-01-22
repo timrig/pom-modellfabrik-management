@@ -7,6 +7,7 @@ async function getLoadData() {
 
     sollAnz=result.value[0].SollGes;
     document.getElementById("sollGes").innerHTML=sollAnz;
+    schichtzeit=result.value[0].Schichtzeit;
     sollAnzV1=result.value[0].sollGesV1;
     sollAnzV2=result.value[0].sollGesV2;
     sollAnzV3=result.value[0].sollGesV3;
@@ -26,7 +27,7 @@ async function getLoadData() {
     document.getElementById("istGes").innerHTML=istAnz;
     ausschuss=result.value[0].Defekt;
     ausschussAnt=(ausschuss/(parseInt(ausschuss)+parseInt(istAnz))*100).toFixed(2);
-    document.getElementById("ausschussAnt").innerHTML=ausschussAnt;
+    document.getElementById("ausschussAnt").innerHTML=ausschussAnt + "&#037;";
     min=result.value[0].TeileProMin;
     document.getElementById("istAnzZeit").innerHTML=teileAnzMin;
     produkt();
@@ -35,9 +36,14 @@ async function getLoadData() {
     krankheit=result.value[0].Krankheitsfälle;
     unfallfrei=result.value[0].Unfallfrei;
     durchZeitMW=result.value[0].DDLZ;
+    document.getElementById("durchZeit").innerHTML = durchZeitMW.toFixed(2) + " Sek.";
+    zeitEnde=result.value[0].ZeitEnde;
+    schichtTimer=zeitEnde-(zeitEnde-new Date());
+    timerAZ=setInterval(azTimer,60*1000);
     personalVerf=((personal-krankheit)/personal*100).toFixed(2);
-    document.getElementById("personalVerf").innerHTML=personalVerf;
-    document.getElementById("unfallfreiSeit").innerHTML=unfallfrei;
+    document.getElementById("personalVerf").innerHTML = personalVerf + "&#037;";
+    if(unfallfrei>0 && unfallfrei<=1) document.getElementById("unfallfreiSeit").innerHTML = unfallfrei + " Tag";
+    if(unfallfrei>1) document.getElementById("unfallfreiSeit").innerHTML = unfallfrei + " Tagen";
     updateChart(ausschuss,istAnz,"ausschussAntChart");
     updateChart(sollAnz,istAnz,"erfuellungChart");
     updateChart(personal,krankheit,"krankChart");
@@ -53,4 +59,9 @@ async function getLoadData() {
             z=setInterval(function() {sollProZeit(3)},ivlV3);   
         }
     }
+    document.getElementById("soll1").innerHTML=sollAnz;
+    document.getElementById("soll2").innerHTML=schichtzeit;
+    document.getElementById("soll3").innerHTML=personal;
+    document.getElementById("soll4").innerHTML=krankheit;
+    document.getElementById("soll5").innerHTML=unfallfrei;
 }

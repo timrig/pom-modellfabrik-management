@@ -126,6 +126,8 @@ async function sqlQuerySchichtUpdate(schicht) {
         FertigV2: istAnzV2,
         FertigV3: istAnzV3,
         DDLZ: durchZeitMW,
+        Schichtzeit: schichtzeit,
+        ZeitEnde: zeitEnde,
         Schicht: schicht
     };
     const endpoint = '/data-api/rest/Schicht/ID';

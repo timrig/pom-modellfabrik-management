@@ -5,7 +5,6 @@ var radius = Math.min(width, height) / 2 - margin;
 
 function updateChart(x, y, chartID) {
   var svg = d3.select("#" + chartID).select("svg");
-
   if (svg.empty()) {
     svg = d3.select("#" + chartID)
       .append("svg")
@@ -14,9 +13,7 @@ function updateChart(x, y, chartID) {
       .append("g")
       .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
   }
-
   var data = {};
-
   if (chartID === "ausschussAntChart") {
     data = { "Ist": y, "Ausschuss": x };
   } else if (chartID === "erfuellungChart") {
@@ -24,18 +21,14 @@ function updateChart(x, y, chartID) {
   } else if (chartID === "krankChart") {
     data = { "Personal": x-y, "Krankheit": y };
   }
-
   var color = d3.scaleOrdinal()
     .domain(Object.keys(data))
     .range(["green", "red"]);
-
   var pie = d3.pie()
     .value(function(d) { return d.value; });
   var data_ready = pie(d3.entries(data));
-
   var arcs = svg.selectAll('path')
     .data(data_ready);
-
   arcs.enter().append('path')
     .merge(arcs)
     .attr('d', d3.arc()
@@ -43,9 +36,32 @@ function updateChart(x, y, chartID) {
       .outerRadius(radius)
     )
     .attr('fill', function(d) { return (color(d.data.key)); })
-    .attr("stroke", "white") // Äußerer Rand in Weiß
+    .attr("stroke", "white")
     .style("stroke-width", "2px")
     .style("opacity", 0.7);
-
   arcs.exit().remove();
+}
+
+function updateTimeChart(zeit,zeitMax) {
+  const width = window.innerWidth;
+  const height = 10;
+  var svg = d3.select("#TimeChart").select("svg");
+  if (svg.empty()) {
+    svg = d3.select("#TimeChart")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
+  }
+  const progress = (zeit / zeitMax) * 100;
+  const bars = svg.selectAll("rect")
+    .data([progress, 100 - progress]);
+  bars.exit().remove();
+  bars.enter()
+    .append("rect")
+    .merge(bars)
+    .attr("x", (d, i) => i === 0 ? 0 : progress + "%")
+    .attr("y", 0)
+    .attr("width", d => d + "%")
+    .attr("height", height)
+    .attr("fill", (d, i) => i === 0 ? "green" : "red");
 }

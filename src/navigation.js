@@ -28,22 +28,26 @@ function managementBtn() {
   document.getElementById("übersicht").style.display = "none";
   document.getElementById("übersicht2").style.display = "none";
   document.getElementById("export").style.display = "none";
+  document.getElementById("status").style.display = "none";
 }
 function uebersichtBtn() {
   document.getElementById("übersicht").style.display = "block";
   document.getElementById("übersicht2").style.display = "none";
   document.getElementById("management").style.display = "none";
   document.getElementById("export").style.display = "none";
+  document.getElementById("status").style.display = "none";
 }
 function uebersicht2Btn() {
   document.getElementById("übersicht").style.display = "block";
   document.getElementById("übersicht2").style.display = "block";
   document.getElementById("management").style.display = "none";
   document.getElementById("export").style.display = "none";
+  document.getElementById("status").style.display = "none";
 }
 function exportBtn() {
   document.getElementById("export").style.display = "block";
   document.getElementById("management").style.display = "none";
   document.getElementById("übersicht").style.display = "none";
   document.getElementById("übersicht2").style.display = "none";
+  document.getElementById("status").style.display = "none";
 }
