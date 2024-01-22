@@ -54,10 +54,11 @@ var rowBufferAusschuss;
 var abfrageDLZ=false;
 var schichtTimer=0;
 var zeitEnde;
+var schichtAbfrage;
 
 //Soll Parameter
 function sollBtn() {
-  if(ivlV1>0) alert("Die Parameter können nur bei inaktiver Schicht verändert werden!");
+  if(schichtAbfrage==true) alert("Die Parameter können nur bei inaktiver Schicht verändert werden!");
   else {
     if(document.getElementById("sollAnzV1").value!="NaN"){
       sollAnzV1=document.getElementById("sollAnzV1").value;
@@ -390,7 +391,7 @@ function updateBtn() {
     text+="Unfallfrei ";
   }
   personalVerf=((personal-krankheit)/personal*100).toFixed(2);
-  document.getElementById("personalVerf").innerHTML = personalVerf + "&#037;";
+  document.getElementById("personalVerf").innerHTML = personalVerf + "&#037;";updateTime: 
   updateChart(personal,krankheit,"krankChart");
   if(unfallfrei>0 && unfallfrei<=1) document.getElementById("unfallfreiSeit").innerHTML = unfallfrei + " Tag";
   if(unfallfrei>1) document.getElementById("unfallfreiSeit").innerHTML = unfallfrei + " Tagen";
@@ -419,6 +420,29 @@ function reset() {
     clearInterval(y);
     clearInterval(z);
     clearInterval(timerAZ);
+    istAnz=0,
+    ausschuss=0,
+    sollAnz=0,
+    sollAnzV1=0,
+    sollAnzV2=0,
+    sollAnzV3=0,
+    sollAnzProZeit=0,
+    sollAnzV1ProZeit=0,
+    sollAnzV2ProZeit=0,
+    sollAnzV3ProZeit=0,
+    ivlV1=0,
+    ivlV2=0,
+    ivlV3=0,
+    min=1,
+    unfallfrei=0,
+    krankheit=0,
+    personal=0,
+    istAnzV1=0,
+    istAnzV2=0,
+    istAnzV3=0,
+    durchZeitMW=0,
+    schichtzeit=0,
+    zeitEnde=0,
     sqlQuerySchichtUpdate(false);
     location.reload();
   }

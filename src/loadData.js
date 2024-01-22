@@ -4,7 +4,7 @@ async function getLoadData() {
     const response = await fetch(`${endpoint}/${id}`);
     const result = await response.json();
     console.table(result.value);
-
+    schichtAbfrage=result.value[0].Schicht
     sollAnz=result.value[0].SollGes;
     document.getElementById("sollGes").innerHTML=sollAnz;
     schichtzeit=result.value[0].Schichtzeit;
