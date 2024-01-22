@@ -37,11 +37,11 @@ async function getLoadData() {
     unfallfrei=result.value[0].Unfallfrei;
     durchZeitMW=result.value[0].DDLZ;
     document.getElementById("durchZeit").innerHTML = durchZeitMW.toFixed(2) + " Sek.";
-    zeitEnde=result.value[0].ZeitEnde;
-    schichtTimer=(zeitEnde-new Date().getTime())/600000;
-    if(schichtTimer==1) document.getElementById("schichtTimer").innerHTML=schichtTimer + " Minute";
-    else document.getElementById("schichtTimer").innerHTML=schichtTimer + " Minuten";
-    timerAZ=setInterval(azTimer,60*1000);
+    if(result.value[0].ZeitEnde>0) {
+        zeitEnde=result.value[0].ZeitEnde;
+        if(zeitEnde>0) timerAZ=setInterval(azTimer,1000);
+    }
+    else zeitEnde=0;
     personalVerf=((personal-krankheit)/personal*100).toFixed(2);
     document.getElementById("personalVerf").innerHTML = personalVerf + "&#037;";
     if(unfallfrei>0 && unfallfrei<=1) document.getElementById("unfallfreiSeit").innerHTML = unfallfrei + " Tag";

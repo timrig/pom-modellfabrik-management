@@ -98,8 +98,8 @@ function startBtn() {
       document.getElementById("sollGes").innerHTML=sollAnz;
       document.getElementById("prod").innerHTML="0&#037;";
       document.getElementById("schichtTimer").innerHTML="0 Minuten";
-      updateChart(ausschuss,istAnz,"ausschussAntChart");
-      updateChart(sollAnz,istAnz,"erfuellungChart");
+      //updateChartart(ausschuss,istAnz,"ausschussAntChart");
+      //updateChartart(sollAnz,istAnz,"erfuellungChart");
       if(sollAnzV2 > 0 && zeitV2 > 0) {
         updateIvl(2);
       }
@@ -117,7 +117,7 @@ function startBtn() {
       let time = new Date();
       time.setMinutes(time.getMinutes() + parseInt(schichtzeit));
       zeitEnde = time.getTime();
-      timerAZ=setInterval(azTimer,60*1000);
+      timerAZ=setInterval(azTimer,1000);
       t=setInterval(teileProMin,60*1000);
       updateIvl(1);
       console.log("Schicht gestartet!");
@@ -129,15 +129,22 @@ function startBtn() {
 }
 
 function azTimer() {
-  var zeit;
-  zeit = Math.round(new Date().getTime() / 60000);
-  schichtTimer++;
-  if(schichtTimer==1) document.getElementById("schichtTimer").innerHTML=schichtTimer + " Minute";
-  else document.getElementById("schichtTimer").innerHTML=schichtTimer + " Minuten";
-  if(schichtTimer==schichtzeit) {
+  let now = new Date().getTime();
+  if((zeitEnde - now)/1000<=0) {
     clearInterval(timerAZ);
   }
-  updateTimeChart(schichtTimer,schichtzeit);
+  schichtTimer=schichtzeit*60-((zeitEnde - now)/1000);
+  let hour = Math.floor(schichtTimer /3600);
+  let minute = Math.floor((schichtTimer - hour*3600)/60);
+  let seconds = (schichtTimer - (hour*3600 + minute*60)).toFixed(0);
+  if(hour < 10)
+    hour = "0"+hour;
+  if(minute < 10)
+    minute = "0"+minute;
+  if(seconds < 10)
+    seconds = "0"+seconds;
+  document.getElementById("schichtTimer").innerHTML = hour + ":" + minute + ":" + seconds;
+  updateTimeChart(minute,schichtzeit);
 }
 
 function updateIvl(v) {
@@ -256,8 +263,8 @@ function datenAktualisierung() {
   ausschussAnt=(ausschuss/(ausschuss+istAnz)*100).toFixed(2);
   document.getElementById("ausschussAnt").innerHTML = ausschussAnt + "&#037;";
   produkt();
-  updateChart(ausschuss,istAnz,"ausschussAntChart");
-  updateChart(sollAnz,istAnz,"erfuellungChart");
+  //updateChartart(ausschuss,istAnz,"ausschussAntChart");
+  //updateChartart(sollAnz,istAnz,"erfuellungChart");
   if(schichtende==false) sqlQuerySchichtUpdate(true);
 }
 
@@ -298,7 +305,7 @@ function ausschussTeile(linie,station) {
     istAnz=parseInt(istAnzV1)+parseInt(istAnzV2)+parseInt(istAnzV3);
     document.getElementById("istAnz").innerHTML=istAnz;
     document.getElementById("istGes").innerHTML=istAnz;
-    updateChart(sollAnz,istAnz,"erfuellungChart");
+    //updateChartart(sollAnz,istAnz,"erfuellungChart");
       if(linie==1 && dlzBufferAusschuss>0) {
         zeitR1[linie + "," + idStr]=0;
         dlz = (new Date().getTime()-dlzBufferAusschuss)/1000;
@@ -313,7 +320,7 @@ function ausschussTeile(linie,station) {
   ausschussAnt=(ausschuss/(parseInt(ausschuss)+parseInt(istAnz))*100).toFixed(2);
   document.getElementById("ausschussAnt").innerHTML = ausschussAnt + "&#037;";
   tblDefekt();
-  updateChart(ausschuss,istAnz,"ausschussAntChart");
+  //updateChartart(ausschuss,istAnz,"ausschussAntChart");
   if(schichtende==false) sqlQuerySchichtUpdate(true);
 }
 
@@ -394,7 +401,7 @@ function updateBtn() {
   }
   personalVerf=((personal-krankheit)/personal*100).toFixed(2);
   document.getElementById("personalVerf").innerHTML = personalVerf + "&#037;";updateTime: 
-  updateChart(personal,krankheit,"krankChart");
+  //updateChartart(personal,krankheit,"krankChart");
   if(unfallfrei>0 && unfallfrei<=1) document.getElementById("unfallfreiSeit").innerHTML = unfallfrei + " Tag";
   if(unfallfrei>1) document.getElementById("unfallfreiSeit").innerHTML = unfallfrei + " Tagen";
   sqlQuerySchichtUpdate(true);
