@@ -137,7 +137,7 @@ function azTimer() {
   if(schichtTimer==schichtzeit) {
     clearInterval(timerAZ);
   }
-  updateTimeChart(parseInt(schichtTimer),parseInt(schichtzeit));
+  updateTimeChart(schichtTimer,schichtzeit);
 }
 
 function updateIvl(v) {

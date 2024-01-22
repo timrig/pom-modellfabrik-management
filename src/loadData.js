@@ -38,7 +38,7 @@ async function getLoadData() {
     durchZeitMW=result.value[0].DDLZ;
     document.getElementById("durchZeit").innerHTML = durchZeitMW.toFixed(2) + " Sek.";
     zeitEnde=result.value[0].ZeitEnde;
-    schichtTimer=(zeitEnde-new Date().getTime())/60000;
+    schichtTimer=(zeitEnde-new Date().getTime())/600000;
     if(schichtTimer==1) document.getElementById("schichtTimer").innerHTML=schichtTimer + " Minute";
     else document.getElementById("schichtTimer").innerHTML=schichtTimer + " Minuten";
     timerAZ=setInterval(azTimer,60*1000);
