@@ -43,7 +43,7 @@ function updateChart(x, y, chartID) {
 }
 
 function updateTimeChart(zeit,zeitMax) {
-  const width = 200;
+  const width = 300;
   const height = 10;
   var svg = d3.select("#TimeChart").select("svg");
   if (svg.empty()) {

@@ -114,8 +114,9 @@ function startBtn() {
         sollAnzV3=0;
         ivlV3=0;
       }
-      zeitEnde = new Date();
-      zeitEnde.setMinutes(zeitEnde.getMinutes() + parseInt(schichtzeit));
+      let time = new Date();
+      time.setMinutes(time.getMinutes() + parseInt(schichtzeit));
+      zeitEnde = time.getTime();
       timerAZ=setInterval(azTimer,60*1000);
       t=setInterval(teileProMin,60*1000);
       updateIvl(1);
@@ -128,7 +129,7 @@ function startBtn() {
 }
 
 function azTimer() {
-  let zeit;
+  var zeit;
   zeit = Math.round(new Date().getTime() / 60000);
   schichtTimer++;
   if(schichtTimer==1) document.getElementById("schichtTimer").innerHTML=schichtTimer + " Minute";
@@ -136,7 +137,7 @@ function azTimer() {
   if(schichtTimer==schichtzeit) {
     clearInterval(timerAZ);
   }
-  updateTimeChart(schichtTimer,schichtzeit);
+  updateTimeChart(parseInt(schichtTimer),parseInt(schichtzeit));
 }
 
 function updateIvl(v) {
@@ -154,7 +155,7 @@ function updateIvl(v) {
     ivlV3=Math.round((zeitV3/sollAnzV3)*60*1000);
     if(schichtende==false) sqlQuerySchichtUpdate(true);
     z=setInterval(function() {sollProZeit(3)},ivlV3);
-  }
+  } 
 }
 
 function auftragV1Btn() {
@@ -217,6 +218,7 @@ function sollProZeit(v) {
   if(parseInt(sollAnzV1ProZeit)+parseInt(sollAnzV2ProZeit)+parseInt(sollAnzV3ProZeit)==parseInt(sollAnz)){
     console.log("Schichtende!");
     clearInterval(t);
+    clearInterval(timerAZ);
     schichtende=true;
     sqlQuerySchichtUpdate(false);
   }
