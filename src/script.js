@@ -98,8 +98,8 @@ function startBtn() {
       document.getElementById("sollGes").innerHTML=sollAnz;
       document.getElementById("prod").innerHTML="0&#037;";
       document.getElementById("schichtTimer").innerHTML="0 Minuten";
-      //updateChartart(ausschuss,istAnz,"ausschussAntChart");
-      //updateChartart(sollAnz,istAnz,"erfuellungChart");
+      updateChartart(ausschuss,istAnz,"ausschussAntChart");
+      updateChartart(sollAnz,istAnz,"erfuellungChart");
       if(sollAnzV2 > 0 && zeitV2 > 0) {
         updateIvl(2);
       }
@@ -263,8 +263,8 @@ function datenAktualisierung() {
   ausschussAnt=(ausschuss/(ausschuss+istAnz)*100).toFixed(2);
   document.getElementById("ausschussAnt").innerHTML = ausschussAnt + "&#037;";
   produkt();
-  //updateChartart(ausschuss,istAnz,"ausschussAntChart");
-  //updateChartart(sollAnz,istAnz,"erfuellungChart");
+  updateChartart(ausschuss,istAnz,"ausschussAntChart");
+  updateChartart(sollAnz,istAnz,"erfuellungChart");
   if(schichtende==false) sqlQuerySchichtUpdate(true);
 }
 
@@ -305,7 +305,7 @@ function ausschussTeile(linie,station) {
     istAnz=parseInt(istAnzV1)+parseInt(istAnzV2)+parseInt(istAnzV3);
     document.getElementById("istAnz").innerHTML=istAnz;
     document.getElementById("istGes").innerHTML=istAnz;
-    //updateChartart(sollAnz,istAnz,"erfuellungChart");
+    updateChartart(sollAnz,istAnz,"erfuellungChart");
       if(linie==1 && dlzBufferAusschuss>0) {
         zeitR1[linie + "," + idStr]=0;
         dlz = (new Date().getTime()-dlzBufferAusschuss)/1000;
@@ -320,7 +320,7 @@ function ausschussTeile(linie,station) {
   ausschussAnt=(ausschuss/(parseInt(ausschuss)+parseInt(istAnz))*100).toFixed(2);
   document.getElementById("ausschussAnt").innerHTML = ausschussAnt + "&#037;";
   tblDefekt();
-  //updateChartart(ausschuss,istAnz,"ausschussAntChart");
+  updateChartart(ausschuss,istAnz,"ausschussAntChart");
   if(schichtende==false) sqlQuerySchichtUpdate(true);
 }
 
@@ -401,7 +401,7 @@ function updateBtn() {
   }
   personalVerf=((personal-krankheit)/personal*100).toFixed(2);
   document.getElementById("personalVerf").innerHTML = personalVerf + "&#037;";updateTime: 
-  //updateChartart(personal,krankheit,"krankChart");
+  updateChartart(personal,krankheit,"krankChart");
   if(unfallfrei>0 && unfallfrei<=1) document.getElementById("unfallfreiSeit").innerHTML = unfallfrei + " Tag";
   if(unfallfrei>1) document.getElementById("unfallfreiSeit").innerHTML = unfallfrei + " Tagen";
   sqlQuerySchichtUpdate(true);
