@@ -134,7 +134,7 @@ function azTimer() {
     clearInterval(timerAZ);
   }
   schichtTimer=schichtzeit*60-((zeitEnde - now)/1000);
-  let hour = Math.floor(schichtTimer /3600);
+  let hour = Math.floor(schichtTimer / 3600);
   let minute = Math.floor((schichtTimer - hour*3600)/60);
   let seconds = (schichtTimer - (hour*3600 + minute*60)).toFixed(0);
   if(hour < 10)
@@ -144,7 +144,7 @@ function azTimer() {
   if(seconds < 10)
     seconds = "0"+seconds;
   document.getElementById("schichtTimer").innerHTML = hour + ":" + minute + ":" + seconds;
-  updateTimeChart(minute,schichtzeit);
+  if(minute <= schichtzeit) updateTimeChart(schichtTimer,schichtzeit*60);
 }
 
 function updateIvl(v) {
