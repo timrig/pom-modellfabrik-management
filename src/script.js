@@ -74,6 +74,7 @@ function sollBtn() {
 
 //Schichtstart
 function startBtn() {
+  schichtAbfrage = true;
   let text = "Soll wirklich eine neue Schicht gestartet werden?";
   if (confirm(text) == true) {
     if((sollAnzV1=="") || schichtzeit=="") {
@@ -98,8 +99,8 @@ function startBtn() {
       document.getElementById("sollGes").innerHTML=sollAnz;
       document.getElementById("prod").innerHTML="0&#037;";
       document.getElementById("schichtTimer").innerHTML="0 Minuten";
-      updateChart(ausschuss,istAnz,"ausschussAntChart");
-      updateChart(sollAnz,istAnz,"erfuellungChart");
+      //updateChart(ausschuss,istAnz,"ausschussAntChart");
+      //updateChart(sollAnz,istAnz,"erfuellungChart");
       if(sollAnzV2 > 0 && zeitV2 > 0) {
         updateIvl(2);
       }
@@ -148,16 +149,19 @@ function azTimer() {
 
 function updateIvl(v) {
   if(v==1) {
+    if(x>0) clearInterval(x);
     ivlV1=Math.round((schichtzeit/sollAnzV1)*60*1000);
     sqlQuerySchichtUpdate(true);
     x=setInterval(function() {sollProZeit(1)},ivlV1);
   }
   else if(v==2) {
+    if(y>0) clearInterval(y);
     ivlV2=Math.round((zeitV2/sollAnzV2)*60*1000);
     if(schichtende==false) sqlQuerySchichtUpdate(true);
     y=setInterval(function() {sollProZeit(2)},ivlV2);
   }
   else if(v==3) {
+    if(z>0) clearInterval(z);
     ivlV3=Math.round((zeitV3/sollAnzV3)*60*1000);
     if(schichtende==false) sqlQuerySchichtUpdate(true);
     z=setInterval(function() {sollProZeit(3)},ivlV3);
@@ -196,8 +200,6 @@ function sollProZeit(v) {
       console.log("Soll Stecker V1 fertig!");
       clearInterval(x);
       ivlV1=0;
-      document.getElementById("divStart").style.display = "block";
-      document.getElementById("divEnde").style.display = "none";
     }
   }
   else if(v==2) {
@@ -223,6 +225,9 @@ function sollProZeit(v) {
   produkt();
   if(parseInt(sollAnzV1ProZeit)+parseInt(sollAnzV2ProZeit)+parseInt(sollAnzV3ProZeit)==parseInt(sollAnz)){
     console.log("Schichtende!");
+    document.getElementById("divStart").style.display = "block";
+    document.getElementById("divEnde").style.display = "none";
+    schichtAbfrage = false;
     clearInterval(t);
     clearInterval(timerAZ);
     schichtende=true;
@@ -262,8 +267,8 @@ function datenAktualisierung() {
   ausschussAnt=(ausschuss/(ausschuss+istAnz)*100).toFixed(2);
   document.getElementById("ausschussAnt").innerHTML = ausschussAnt + "&#037;";
   produkt();
-  updateChart(ausschuss,istAnz,"ausschussAntChart");
-  updateChart(sollAnz,istAnz,"erfuellungChart");
+  //updateChart(ausschuss,istAnz,"ausschussAntChart");
+  //updateChart(sollAnz,istAnz,"erfuellungChart");
   if(schichtende==false) sqlQuerySchichtUpdate(true);
 }
 
@@ -304,7 +309,7 @@ function ausschussTeile(linie,station) {
     istAnz=parseInt(istAnzV1)+parseInt(istAnzV2)+parseInt(istAnzV3);
     document.getElementById("istAnz").innerHTML=istAnz;
     document.getElementById("istGes").innerHTML=istAnz;
-    updateChart(sollAnz,istAnz,"erfuellungChart");
+    //updateChart(sollAnz,istAnz,"erfuellungChart");
       if(linie==1 && dlzBufferAusschuss>0) {
         zeitR1[linie + "," + idStr]=0;
         dlz = (new Date().getTime()-dlzBufferAusschuss)/1000;
@@ -319,7 +324,7 @@ function ausschussTeile(linie,station) {
   ausschussAnt=(ausschuss/(parseInt(ausschuss)+parseInt(istAnz))*100).toFixed(2);
   document.getElementById("ausschussAnt").innerHTML = ausschussAnt + "&#037;";
   tblDefekt();
-  updateChart(ausschuss,istAnz,"ausschussAntChart");
+  //updateChart(ausschuss,istAnz,"ausschussAntChart");
   if(schichtende==false) sqlQuerySchichtUpdate(true);
 }
 
@@ -400,7 +405,7 @@ function updateBtn() {
   }
   personalVerf=((personal-krankheit)/personal*100).toFixed(2);
   document.getElementById("personalVerf").innerHTML = personalVerf + "&#037;";updateTime: 
-  updateChart(personal,krankheit,"krankChart");
+  //updateChart(personal,krankheit,"krankChart");
   if(unfallfrei>0 && unfallfrei<=1) document.getElementById("unfallfreiSeit").innerHTML = unfallfrei + " Tag";
   if(unfallfrei>1) document.getElementById("unfallfreiSeit").innerHTML = unfallfrei + " Tagen";
   sqlQuerySchichtUpdate(true);
@@ -411,6 +416,9 @@ function updateBtn() {
 function schichtEnde() {
   let text = "Soll die aktive Schicht wirklich beendet werden?";
   if (confirm(text) == true) {
+    schichtAbfrage = false;
+    document.getElementById("divStart").style.display = "block";
+    document.getElementById("divEnde").style.display = "none";
     clearInterval(x);
     clearInterval(y);
     clearInterval(z);

@@ -5,6 +5,14 @@ async function getLoadData() {
     const result = await response.json();
     console.table(result.value);
     schichtAbfrage=result.value[0].Schicht
+    if(schichtAbfrage==true) {
+        document.getElementById("divStart").style.display = "none";
+        document.getElementById("divEnde").style.display = "block";
+    }
+    else {
+        document.getElementById("divStart").style.display = "block";
+        document.getElementById("divEnde").style.display = "none";
+    }
     sollAnz=result.value[0].SollGes;
     document.getElementById("sollGes").innerHTML=sollAnz;
     schichtzeit=result.value[0].Schichtzeit;
