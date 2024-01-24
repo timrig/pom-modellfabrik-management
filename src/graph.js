@@ -48,30 +48,24 @@ function updateTimeChart(zeit,zeitMax,id) {
   var svg;
   if(id==1) {
     svg = d3.select("#TimeChart").select("svg");
-    if (svg.empty()) {
-      svg = d3.select("#TimeChart")
-        .append("svg")
-        .attr("width", width)
-        .attr("height", height);
-    }
+    svg = d3.select("#TimeChart")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
   }
   else if(id==2) {
     svg = d3.select("#TimeChartV2").select("svg");
-    if (svg.empty()) {
-      svg = d3.select("#TimeChartV2")
-        .append("svg")
-        .attr("width", (width/2)*0.9)
-        .attr("height", height);
-    }
+    svg = d3.select("#TimeChartV2")
+      .append("svg")
+      .attr("width", (width/2)*0.9)
+      .attr("height", height);
   }
   else if(id==3) {
     svg = d3.select("#TimeChartV3").select("svg");
-    if (svg.empty()) {
-      svg = d3.select("#TimeChartV3")
-        .append("svg")
-        .attr("width", (width/2)*0.9)
-        .attr("height", height);
-    }
+    svg = d3.select("#TimeChartV3")
+      .append("svg")
+      .attr("width", (width/2)*0.9)
+      .attr("height", height);
   }
   const progress = (zeit / zeitMax) * 100;
   const bars = svg.selectAll("rect")

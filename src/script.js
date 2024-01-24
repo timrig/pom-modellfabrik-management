@@ -119,7 +119,7 @@ function startBtn() {
       document.getElementById("sollV2").innerHTML=sollAnzV2;
       document.getElementById("istV3").innerHTML=istAnzV3;
       document.getElementById("sollV3").innerHTML=sollAnzV3;
-      updateChart(ausschuss,istAnz,"ausschussAntChart");
+      updateChart(ausschuss,1,"ausschussAntChart");
       updateChart(sollAnz,istAnz,"erfuellungChart");
       if(sollAnzV2 > 0 && zeitV2 > 0) {
         updateIvl(2);
@@ -172,13 +172,21 @@ function azTimer(v) {
   if(hour < 10) hour = "0"+hour;
   if(minute < 10) minute = "0"+minute;
   if(seconds < 10) seconds = "0"+seconds;
-  if(schichtTimer <= (zeit*60)+1) {
+  if(v==1) {
     let timer;
     if(v==1) timer="schichtTimer";
     else if(v==2) timer="zeitV2";
     else if(v==3) timer="zeitV3";
     document.getElementById(timer).innerHTML = "Arbeitszeit: " + hour + ":" + minute + ":" + seconds;
-    updateTimeChart(schichtTimer,zeit*60,v);
+    updateChart(schichtTimer,zeit*60,v);
+  }
+  if(v>1 && Math.round(schichtTimer) <= (zeit*60)) {
+    let timer;
+    if(v==1) timer="schichtTimer";
+    else if(v==2) timer="zeitV2";
+    else if(v==3) timer="zeitV3";
+    document.getElementById(timer).innerHTML = "Arbeitszeit: " + hour + ":" + minute + ":" + seconds;
+    updateChart(schichtTimer,zeit*60,v);
   }
   else {
     if(v==2) {
@@ -191,22 +199,29 @@ function azTimer(v) {
 }
 
 function updateIvl(v) {
+  let now = new Date().getTime();
+  let ende;
+  let zeit;
+  if(v==1) {
+    ende = zeitEnde;
+    zeit = parseInt(schichtzeit);
+  }
+  let schichtTimer=zeit*60000-(ende - now);
   if(v==1) {
     if(x>0) clearInterval(x);
-    let now = new Date().getTime();
-    ivlV1=Math.round((((zeitEnde-now)/1000)/(sollAnzV1-sollAnzV1ProZeit))*1000);
+    ivlV1=Math.round((zeit*60000-schichtTimer)/(sollAnzV1-sollAnzV1ProZeit));
     sqlQuerySchichtUpdate(true);
     x=setInterval(function() {sollProZeit(1)},ivlV1);
   }
   else if(v==2) {
     if(y>0) clearInterval(y);
-    ivlV2=Math.round((zeitV2/sollAnzV2)*60*1000);
+    ivlV2=Math.round((6/2)*60*1000);
     if(schichtende==false) sqlQuerySchichtUpdate(true);
     y=setInterval(function() {sollProZeit(2)},ivlV2);
   }
   else if(v==3) {
     if(z>0) clearInterval(z);
-    ivlV3=Math.round((zeitV3/sollAnzV3)*60*1000);
+    ivlV3=Math.round((7/4)*60*1000);
     if(schichtende==false) sqlQuerySchichtUpdate(true);
     z=setInterval(function() {sollProZeit(3)},ivlV3);
   } 
@@ -216,7 +231,7 @@ function auftragV1Btn() {
   sollAnzV2+=2;
   console.log("Auftrag Variante 1 angenommen");
   document.getElementById("sollV2").innerHTML = sollAnzV2;
-  sollAnzV1-=sollAnzV2;
+  sollAnzV1-=2;
   updateIvl(1);
   zeitV2=6;
   updateIvl(2);
@@ -234,7 +249,7 @@ function auftragV2Btn() {
   sollAnzV3+=4;
   console.log("Auftrag Variante 2 angenommen");
   document.getElementById("sollV3").innerHTML = sollAnzV3;
-  sollAnzV1-=sollAnzV3;
+  sollAnzV1-=4;
   updateIvl(1);
   zeitV3=7;
   updateIvl(3);
@@ -325,7 +340,7 @@ function fertig(linie,variante) {
     updateChart(sollAnzV3,istAnzV3,"erfuellungChartV3");
     document.getElementById("istV3").innerHTML = istAnzV3;
     let now = new Date().getTime();
-    if((zeitEndeV3 - now)/1000>0) {
+    if((zeitEndeV3 - now)/1000>3) {
       istV3Plus++;
       document.getElementById("istV3Plus").innerHTML = istV3Plus;
     }
