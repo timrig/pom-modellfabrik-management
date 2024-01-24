@@ -55,9 +55,11 @@ function updateTimeChart(zeit, zeitMax, id) {
     }
     svg.attr("width", width);
   } else if (id == 2 || id == 3) {
-    svg = d3.select(`#TimeChartV${id}`).select("svg");
+    if(id==2) svg = d3.select("#TimeChartV2").select("svg");
+    else if(id==3) svg = d3.select("#TimeChartV3").select("svg");
     if (svg.empty()) {
-      svg = d3.select(`#TimeChartV${id}`)
+      if(id==2) svg = d3.select("#TimeChartV2")
+      else if(id==3) svg = d3.select("#TimeChartV3")
         .append("svg")
         .attr("height", height);
     }
