@@ -50,8 +50,8 @@
     <button id="reset" class="button-10_rot" onclick="reset()">Reset</button><br>
   </div>
   <div class="seite" id="übersicht">
-    <p>Arbeitszeit: <span id="schichtTimer"></span></p>
-    <p></p><div class="diagrammZeit" id="TimeChart"></div></p>
+    <span id="schichtTimer"></span>
+    <div class="diagrammZeit" id="TimeChart"></div>
     <table>
       <tr>
         <td class="vier" style="font-weight:bold;"><div class="kachel" style="height:36px">Anzahl Soll: <span id="sollAnz"></span><br>Anzahl Ist: <span id="istAnz"></span></div></td>
@@ -59,10 +59,44 @@
         <td class="vier" style="font-weight:bold;"><div class="kachel" style="height:36px">Durchlaufzeit:<br><span id="durchZeit"></span></div></td>
         <td class="vier" style="font-weight:bold;"><div class="kachel" style="height:36px">Unfallfrei seit<br><span id="unfallfreiSeit"></span></div></td></tr>
       <tr>
-        <td class="vier" style="font-weight:bold;"><div class="kachel">Fertiggestellt:<br><span id="istGes"></span> von <span id="sollGes"></span><div class="diagramm" id="erfuellungChart"></div></div></td>
-        <td class="vier" style="font-weight:bold;"><div class="kachel">Ausschussquote<br><span id="ausschussAnt"></span><div class="diagramm" id="ausschussAntChart"></div></div></td>
-        <td class="vier" style="font-weight:bold;"><div class="kachel" style="height:86px; justify-content: center; align-items: center;">Fertigteile/min<br><span id="istAnzZeit"></span></div></td>
-        <td class="vier" style="font-weight:bold;"><div class="kachel">Personalverf&uuml;gbarkeit<br><span id="personalVerf"></span><div class="diagramm" id="krankChart"></div></div></td></tr>
+        <td class="vier" style="font-weight:bold;"><div class="kachel_2">Fertiggestellt:<br><span id="istGes"></span> von <span id="sollGes"></span><div class="diagramm" id="erfuellungChart"></div></div></td>
+        <td class="vier" style="font-weight:bold;"><div class="kachel_2">Ausschuss<br><span id="ausschussAnt"></span><div class="diagramm" id="ausschussAntChart"></div></div></td>
+        <td class="vier" style="font-weight:bold;"><div class="kachel_2" style="height:86px; justify-content: center; align-items: center;">Fertigteile/min<br><span id="istAnzZeit"></span></div></td>
+        <td class="vier" style="font-weight:bold;"><div class="kachel_2">Personalverf.<br><span id="personalVerf"></span><div class="diagramm" id="krankChart"></div></div></td></tr>
+    </table>
+    <br>
+    Variantenfertigung:
+    <table>
+      <tr>
+        <td class="zwei" style="font-weight:bold;">
+          <div class="kachel_variante" id="v2">
+            <u>Variante 1</u><br>Fertiggestellt: <span id="istV2"></span> von <span id="sollV2"></span><div class="diagramm" id="erfuellungChartV2"></div>
+            <table>
+              <tr>
+                <td class="zwei">unter 6min: <span id="istV2Plus"></span></td>
+                <td class="zwei">&uuml;ber 6min: <span id="istV2Minus"></span></td>
+              </tr>
+            </table>
+            <br>
+            <span id="zeitV2"></span>
+            <div class="diagrammZeit" id="TimeChartV2"></div>
+          </div>
+        </td>
+        <td class="zwei" style="font-weight:bold;">
+          <div class="kachel_variante" id="v3">
+            <u>Variante 2</u><br>Fertiggestellt: <span id="istV3"></span> von <span id="sollV3"></span><div class="diagramm" id="erfuellungChartV3"></div>
+            <table>
+              <tr>
+                <td class="zwei">unter 7min: <span id="istV3Plus"></span></td>
+                <td class="zwei">&uuml;ber 7min: <span id="istV3Minus"></span></td>
+              </tr>
+            </table>
+            <br>
+            <span id="zeitV3"></span>
+            <div class="diagrammZeit" id="TimeChartV3"></div>
+          </div>
+        </td>
+      </tr>
     </table>
   </div>
   <div class="seite" id="übersicht2">

@@ -33,6 +33,10 @@ async function getLoadData() {
     istAnzV3=result.value[0].FertigV3;
     document.getElementById("istAnz").innerHTML=istAnz;
     document.getElementById("istGes").innerHTML=istAnz;
+    document.getElementById("sollV2").innerHTML=sollAnzV2;
+    document.getElementById("istV2").innerHTML=istAnzV2;
+    document.getElementById("sollV3").innerHTML=sollAnzV3;
+    document.getElementById("istV3").innerHTML=istAnzV3;
     ausschuss=result.value[0].Defekt;
     ausschussAnt=(ausschuss/(parseInt(ausschuss)+parseInt(istAnz))*100).toFixed(2);
     document.getElementById("ausschussAnt").innerHTML=ausschussAnt + "&#037;";
@@ -47,9 +51,30 @@ async function getLoadData() {
     document.getElementById("durchZeit").innerHTML = durchZeitMW.toFixed(2) + " Sek.";
     if(result.value[0].ZeitEnde>0) {
         zeitEnde=result.value[0].ZeitEnde;
-        if(zeitEnde>0) timerAZ=setInterval(azTimer,1000);
+        let now = new Date().getTime();
+        if(zeitEnde>0 && (zeitEnde - now)/1000>0) timerAZ=setInterval(function() {azTimer(1)},1000);
     }
     else zeitEnde=0;
+    if(result.value[0].ZeitEndeV2>0) {
+        zeitEndeV2=result.value[0].ZeitEndeV2;
+        let now = new Date().getTime();
+        if(zeitEndeV2>0 && (zeitEndeV2 - now)/1000>0) timerAZ2=setInterval(function() {azTimer(2)},1000);
+    }
+    else zeitEndeV2=0;
+    if(result.value[0].ZeitEndeV3>0) {
+        zeitEndeV3=result.value[0].ZeitEndeV3;
+        let now = new Date().getTime();
+        if(zeitEndeV3>0 && (zeitEndeV3 - now)/1000>0) timerAZ3=setInterval(function() {azTimer(3)},1000);
+    }
+    else zeitEndeV3=0;
+    istV2Plus=result.value[0].IstV2Plus;
+    istV2Minus=result.value[0].IstV2Minus;
+    istV3Plus=result.value[0].IstV3Plus;
+    istV3Minus=result.value[0].IstV3Minus;
+    document.getElementById("istV2Plus").innerHTML = istV2Plus;
+    document.getElementById("istV2Minus").innerHTML = istV2Minus;
+    document.getElementById("istV3Plus").innerHTML = istV3Plus;
+    document.getElementById("istV3Minus").innerHTML = istV3Minus;
     personalVerf=((personal-krankheit)/personal*100).toFixed(2);
     document.getElementById("personalVerf").innerHTML = personalVerf + "&#037;";
     if(unfallfrei>0 && unfallfrei<=1) document.getElementById("unfallfreiSeit").innerHTML = unfallfrei + " Tag";

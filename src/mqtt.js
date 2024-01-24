@@ -162,7 +162,6 @@ function mqttSub(server,user,pw) {
         else if (message.destinationName === topic_auftragV2 || message.destinationName === topic_auftragV3) {
             var nachricht=String(message.payloadString);
             var nachrichtArray=nachricht.split(",");
-            console.log(nachrichtArray);
             if(nachrichtArray[0]==2 && abfrageAuftragV2==false) {
                 console.log("MQTT Auftrag 2 angenommen");
                 mqttAuftragV2(nachrichtArray[1],nachrichtArray[2]);

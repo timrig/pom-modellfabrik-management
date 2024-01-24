@@ -44,6 +44,8 @@ var ivlV1=0;
 var ivlV2=0;
 var ivlV3=0;
 var timerAZ=0;
+var timerAZ2=0;
+var timerAZ3=0;
 var schichtende=true;
 var abfrageAuftragV2=false;
 var abfrageAuftragV3=false;
@@ -52,9 +54,14 @@ var dlzBufferAusschuss;
 var rowBufferFertig;
 var rowBufferAusschuss;
 var abfrageDLZ=false;
-var schichtTimer=0;
 var zeitEnde;
+var zeitEndeV2;
+var zeitEndeV3;
 var schichtAbfrage;
+var istV2Plus;
+var istV2Minus;
+var istV3Plus;
+var istV3Minus;
 
 //Soll Parameter
 function sollBtn() {
@@ -85,12 +92,18 @@ function startBtn() {
       istAnzV1=0;
       istAnzV2=0;
       istAnzV3=0;
+      sollAnzV2=0;
+      sollAnzV3=0;
       ausschuss=0;
       teileAnzMin=0;
       sollAnzProZeit=0;
       sollAnzV1ProZeit=0;
       sollAnzV2ProZeit=0;
       sollAnzV3ProZeit=0;
+      istV2Plus=0;
+      istV2Minus=0;
+      istV3Plus=0;
+      istV3Minus=0;
       document.getElementById("istAnzZeit").innerHTML=teileAnzMin;
       document.getElementById("istAnz").innerHTML=istAnz;
       document.getElementById("ausschussAnt").innerHTML="0&#037;";
@@ -98,9 +111,16 @@ function startBtn() {
       document.getElementById("sollAnz").innerHTML="0";
       document.getElementById("sollGes").innerHTML=sollAnz;
       document.getElementById("prod").innerHTML="0&#037;";
-      document.getElementById("schichtTimer").innerHTML="0 Minuten";
-      //updateChart(ausschuss,istAnz,"ausschussAntChart");
-      //updateChart(sollAnz,istAnz,"erfuellungChart");
+      document.getElementById("istV2Plus").innerHTML = istV2Plus;
+      document.getElementById("istV2Minus").innerHTML = istV2Minus;
+      document.getElementById("istV3Plus").innerHTML = istV3Plus;
+      document.getElementById("istV3Minus").innerHTML = istV3Minus;
+      document.getElementById("istV2").innerHTML=istAnzV2;
+      document.getElementById("sollV2").innerHTML=sollAnzV2;
+      document.getElementById("istV3").innerHTML=istAnzV3;
+      document.getElementById("sollV3").innerHTML=sollAnzV3;
+      updateChart(ausschuss,istAnz,"ausschussAntChart");
+      updateChart(sollAnz,istAnz,"erfuellungChart");
       if(sollAnzV2 > 0 && zeitV2 > 0) {
         updateIvl(2);
       }
@@ -118,7 +138,7 @@ function startBtn() {
       let time = new Date();
       time.setMinutes(time.getMinutes() + parseInt(schichtzeit));
       zeitEnde = time.getTime();
-      timerAZ=setInterval(azTimer,1000);
+      timerAZ=setInterval(function() {azTimer(1)},1000);
       t=setInterval(teileProMin,60*1000);
       updateIvl(1);
       console.log("Schicht gestartet!");
@@ -129,21 +149,47 @@ function startBtn() {
   }
 }
 
-function azTimer() {
+function azTimer(v) {
   let now = new Date().getTime();
-  if((zeitEnde - now)/1000<=0) {
-    clearInterval(timerAZ);
+  let ende;
+  let zeit;
+  if(v==1) {
+    ende = zeitEnde;
+    zeit = schichtzeit;
   }
-  schichtTimer=schichtzeit*60-((zeitEnde - now)/1000);
+  else if(v==2) {
+    ende = zeitEndeV2;
+    zeit = parseInt(6);
+  }
+  else if(v==3) {
+    ende = zeitEndeV3;
+    zeit = parseInt(10);
+  }
+  let schichtTimer=zeit*60-((ende - now)/1000);
   let hour = Math.floor(schichtTimer / 3600);
   let minute = Math.floor((schichtTimer - hour*3600)/60);
   let seconds = (schichtTimer - (hour*3600 + minute*60)).toFixed(0);
   if(hour < 10) hour = "0"+hour;
   if(minute < 10) minute = "0"+minute;
   if(seconds < 10) seconds = "0"+seconds;
-  if(schichtTimer <= schichtzeit*60) {
-    document.getElementById("schichtTimer").innerHTML = hour + ":" + minute + ":" + seconds;
-    updateTimeChart(schichtTimer,schichtzeit*60);
+  if(schichtTimer <= zeit*60) {
+    let timer;
+    if(v==1) timer="schichtTimer";
+    else if(v==2) timer="zeitV2";
+    else if(v==3) timer="zeitV3";
+    document.getElementById(timer).innerHTML = "Arbeitszeit: " + hour + ":" + minute + ":" + seconds;
+    updateTimeChart(schichtTimer,zeit*60,v);
+  }
+  if((ende - now)/1000<=0) {
+    if(v==1) {
+        clearInterval(timerAZ);
+    }
+    else if(v==2) {
+        clearInterval(timerAZ2);
+    }
+    else if(v==3) {
+        clearInterval(timerAZ3);
+    }
   }
 }
 
@@ -169,26 +215,36 @@ function updateIvl(v) {
 }
 
 function auftragV1Btn() {
-  sollAnzV2=2;
+  sollAnzV2+=2;
   console.log("Auftrag Variante 1 angenommen");
+  document.getElementById("sollV2").innerHTML = sollAnzV2;
   sollAnzV1-=sollAnzV2;
   updateIvl(1);
   zeitV2=6;
   updateIvl(2);
   abfrageAuftragV2=true;
   mqttPubAuftrag(2,sollAnzV2,ivlV2);
+  let time = new Date();
+  time.setMinutes(time.getMinutes() + parseInt(zeitV2));
+  zeitEndeV2 = time.getTime();
+  timerAZ2=setInterval(function() {azTimer(2)},1000);
   statusOn("Auftrag für Variante 1 (Losgröße: 2, Zeit: 6min) wurde erfolgreich angenommen!");
 }
 
 function auftragV2Btn() {
-  sollAnzV3=4;
+  sollAnzV3+=4;
   console.log("Auftrag Variante 2 angenommen");
+  document.getElementById("sollV3").innerHTML = sollAnzV3;
   sollAnzV1-=sollAnzV3;
   updateIvl(1);
   zeitV3=7;
   updateIvl(3);
   abfrageAuftragV3=true;
   mqttPubAuftrag(3,sollAnzV3,ivlV3);
+  let time = new Date();
+  time.setMinutes(time.getMinutes() + parseInt(zeitV3));
+  zeitEndeV3 = time.getTime();
+  timerAZ3=setInterval(function() {azTimer(3)},1000);
   statusOn("Auftrag für Variante 2 (Losgröße: 4, Zeit: 7min) wurde erfolgreich angenommen!");
 }
 
@@ -229,7 +285,6 @@ function sollProZeit(v) {
     document.getElementById("divEnde").style.display = "none";
     schichtAbfrage = false;
     clearInterval(t);
-    clearInterval(timerAZ);
     schichtende=true;
     sqlQuerySchichtUpdate(false);
   }
@@ -251,9 +306,29 @@ function fertig(linie,variante) {
   }
   else if(variante==2) {
     istAnzV2++;
+    document.getElementById("istV2").innerHTML = istAnzV2;
+    let now = new Date().getTime();
+    if((zeitEndeV2 - now)/1000>0) {
+      istV2Plus++;
+      document.getElementById("istV2Plus").innerHTML = istV2Plus;
+    }
+    else {
+      istV2Minus++;
+      document.getElementById("istV2Minus").innerHTML = istV2Minus;
+    }
   }
   else if(variante==3) {
     istAnzV3++;
+    document.getElementById("istV3").innerHTML = istAnzV3;
+    let now = new Date().getTime();
+    if((zeitEndeV3 - now)/1000>0) {
+      istV3Plus++;
+      document.getElementById("istV3Plus").innerHTML = istV3Plus;
+    }
+    else {
+      istV3Minus++;
+      document.getElementById("istV3Minus").innerHTML = istV3Minus;
+    }
   }
   tblFertig();
   datenAktualisierung();
@@ -267,8 +342,8 @@ function datenAktualisierung() {
   ausschussAnt=(ausschuss/(ausschuss+istAnz)*100).toFixed(2);
   document.getElementById("ausschussAnt").innerHTML = ausschussAnt + "&#037;";
   produkt();
-  //updateChart(ausschuss,istAnz,"ausschussAntChart");
-  //updateChart(sollAnz,istAnz,"erfuellungChart");
+  updateChart(ausschuss,istAnz,"ausschussAntChart");
+  updateChart(sollAnz,istAnz,"erfuellungChart");
   if(schichtende==false) sqlQuerySchichtUpdate(true);
 }
 
@@ -309,7 +384,7 @@ function ausschussTeile(linie,station) {
     istAnz=parseInt(istAnzV1)+parseInt(istAnzV2)+parseInt(istAnzV3);
     document.getElementById("istAnz").innerHTML=istAnz;
     document.getElementById("istGes").innerHTML=istAnz;
-    //updateChart(sollAnz,istAnz,"erfuellungChart");
+    updateChart(sollAnz,istAnz,"erfuellungChart");
       if(linie==1 && dlzBufferAusschuss>0) {
         zeitR1[linie + "," + idStr]=0;
         dlz = (new Date().getTime()-dlzBufferAusschuss)/1000;
@@ -324,7 +399,7 @@ function ausschussTeile(linie,station) {
   ausschussAnt=(ausschuss/(parseInt(ausschuss)+parseInt(istAnz))*100).toFixed(2);
   document.getElementById("ausschussAnt").innerHTML = ausschussAnt + "&#037;";
   tblDefekt();
-  //updateChart(ausschuss,istAnz,"ausschussAntChart");
+  updateChart(ausschuss,istAnz,"ausschussAntChart");
   if(schichtende==false) sqlQuerySchichtUpdate(true);
 }
 
@@ -405,7 +480,7 @@ function updateBtn() {
   }
   personalVerf=((personal-krankheit)/personal*100).toFixed(2);
   document.getElementById("personalVerf").innerHTML = personalVerf + "&#037;";updateTime: 
-  //updateChart(personal,krankheit,"krankChart");
+  updateChart(personal,krankheit,"krankChart");
   if(unfallfrei>0 && unfallfrei<=1) document.getElementById("unfallfreiSeit").innerHTML = unfallfrei + " Tag";
   if(unfallfrei>1) document.getElementById("unfallfreiSeit").innerHTML = unfallfrei + " Tagen";
   sqlQuerySchichtUpdate(true);
@@ -423,6 +498,8 @@ function schichtEnde() {
     clearInterval(y);
     clearInterval(z);
     clearInterval(timerAZ);
+    clearInterval(timerAZ2);
+    clearInterval(timerAZ3);
     sqlQuerySchichtUpdate(false);
   }
 }
@@ -436,6 +513,8 @@ function reset() {
     clearInterval(y);
     clearInterval(z);
     clearInterval(timerAZ);
+    clearInterval(timerAZ2);
+    clearInterval(timerAZ3);
     istAnz=0,
     ausschuss=0,
     sollAnz=0,
@@ -459,6 +538,12 @@ function reset() {
     durchZeitMW=0,
     schichtzeit=0,
     zeitEnde=0,
+    zeitEndeV2=0;
+    zeitEndeV3=0;
+    istV2Plus=0;
+    istV2Minus=0;
+    istV3Plus=0;
+    istV3Minus=0;
     sqlQuerySchichtUpdate(false);
     location.reload();
   }

@@ -42,15 +42,36 @@ function updateChart(x, y, chartID) {
   arcs.exit().remove();
 }
 
-function updateTimeChart(zeit,zeitMax) {
+function updateTimeChart(zeit,zeitMax,id) {
   const width = window.innerWidth;
   const height = 10;
-  var svg = d3.select("#TimeChart").select("svg");
-  if (svg.empty()) {
-    svg = d3.select("#TimeChart")
-      .append("svg")
-      .attr("width", width)
-      .attr("height", height);
+  var svg;
+  if(id==1) {
+    svg = d3.select("#TimeChart").select("svg");
+    if (svg.empty()) {
+      svg = d3.select("#TimeChart")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+    }
+  }
+  else if(id==2) {
+    svg = d3.select("#TimeChartV2").select("svg");
+    if (svg.empty()) {
+      svg = d3.select("#TimeChartV2")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+    }
+  }
+  else if(id==3) {
+    svg = d3.select("#TimeChartV3").select("svg");
+    if (svg.empty()) {
+      svg = d3.select("#TimeChartV3")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+    }
   }
   const progress = (zeit / zeitMax) * 100;
   const bars = svg.selectAll("rect")
