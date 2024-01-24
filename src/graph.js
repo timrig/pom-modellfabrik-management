@@ -42,29 +42,39 @@ function updateChart(x, y, chartID) {
   arcs.exit().remove();
 }
 
-function updateTimeChart(zeit, zeitMax, id) {
+function updateTimeChart(zeit,zeitMax,id) {
   const width = window.innerWidth;
   const height = 10;
   var svg;
-  if (id == 1) {
+  if(id==1) {
     svg = d3.select("#TimeChart").select("svg");
     if (svg.empty()) {
       svg = d3.select("#TimeChart")
         .append("svg")
+        .attr("width", width)
         .attr("height", height);
     }
-    svg.attr("width", width);
-  } else if (id == 2 || id == 3) {
-    if(id==2) svg = d3.select("#TimeChartV2").select("svg");
-    else if(id==3) svg = d3.select("#TimeChartV3").select("svg");
-    if (svg.empty()) {
-      if(id==2) svg = d3.select("#TimeChartV2")
-      else if(id==3) svg = d3.select("#TimeChartV3")
-        .append("svg")
-        .attr("height", height);
-    }
-    svg.attr("width", (width/2)*0,9);
   }
+  else if(id==2) {
+    svg = d3.select("#TimeChartV2").select("svg");
+    if (svg.empty()) {
+      svg = d3.select("#TimeChartV2")
+        .append("svg")
+        .attr("width", (width/2)*0.9)
+        .attr("height", height);
+    }
+  }
+  else if(id==3) {
+    svg = d3.select("#TimeChartV3").select("svg");
+    if (svg.empty()) {
+      svg = d3.select("#TimeChartV3")
+        .append("svg")
+        .attr("width", (width/2)*0.9)
+        .attr("height", height);
+    }
+  }
+  if(id==1) svg.attr("width", width);
+  else if(id==2 || id==3) svg.attr("width", (width/2)*0.9);
   const progress = (zeit / zeitMax) * 100;
   const bars = svg.selectAll("rect")
     .data([progress, 100 - progress]);
