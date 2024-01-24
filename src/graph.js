@@ -60,7 +60,7 @@ function updateTimeChart(zeit,zeitMax,id) {
     if (svg.empty()) {
       svg = d3.select("#TimeChartV2")
         .append("svg")
-        .attr("width", width)
+        .attr("width", (width/2)*0.9)
         .attr("height", height);
     }
   }
@@ -69,7 +69,7 @@ function updateTimeChart(zeit,zeitMax,id) {
     if (svg.empty()) {
       svg = d3.select("#TimeChartV3")
         .append("svg")
-        .attr("width", width)
+        .attr("width", (width/2)*0.9)
         .attr("height", height);
     }
   }
