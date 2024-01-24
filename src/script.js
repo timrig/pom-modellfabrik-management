@@ -258,7 +258,6 @@ function auftragV2Btn() {
   statusOn("Auftrag für Variante 2 (Losgröße: 4, Zeit: 7min) wurde erfolgreich angenommen!");
 }
 
-
 function sollProZeit(v) {
   if(v==1) {
     sollAnzV1ProZeit++;

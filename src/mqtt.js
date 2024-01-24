@@ -164,11 +164,11 @@ function mqttSub(server,user,pw) {
             var nachrichtArray=nachricht.split(",");
             if(nachrichtArray[0]==2 && abfrageAuftragV2==false) {
                 console.log("MQTT Auftrag 2 angenommen");
-                mqttAuftragV2(nachrichtArray[1],nachrichtArray[2]);
+                mqttAuftragV2();
             }
             else if(nachrichtArray[0]==3 && abfrageAuftragV3==false) {
                 console.log("MQTT Auftrag 3 angenommen");
-                mqttAuftragV3(nachrichtArray[1],nachrichtArray[2]);
+                mqttAuftragV3();
             }
         }
     }
@@ -206,26 +206,36 @@ function mqttPubAuftrag(v,soll,ivl) {
     connectPub();
 }
 
-function mqttAuftragV2(soll,ivl){
-    sollAnzV2=soll;
-    console.log("Auftrag angenommen");
-    sollAnz+=parseInt(sollAnzV2);
-    console.log("Soll-Gesamt: " + sollAnz);
-    document.getElementById("sollGes").innerHTML=sollAnz;
-    ivlV2=ivl;
-    console.log("Intervall: " + ivlV2);
+function mqttAuftragV2(){
+    sollAnzV2+=2;
+    console.log("Auftrag Variante 1 angenommen");
+    document.getElementById("sollV2").innerHTML = sollAnzV2;
+    sollAnzV1-=2;
+    updateIvl(1);
+    zeitV2=6;
+    updateIvl(2);
     abfrageAuftragV2=true;
-    y=setInterval(function() {sollProZeit(2)},ivlV2);
+    let time = new Date();
+    time.setMinutes(time.getMinutes() + parseInt(6));
+    zeitEndeV2 = time.getTime();
+    timerAZ2=setInterval(function() {azTimer(2)},1000);
+    updateChart(sollAnzV2,istAnzV2,"erfuellungChartV2");
+    statusOn("Auftrag für Variante 1 (Losgröße: 2, Zeit: 6min) wurde erfolgreich angenommen!");
 }
 
-function mqttAuftragV3(soll,ivl){
-    sollAnzV3=soll;
-    console.log("Auftrag angenommen");
-    sollAnz+=parseInt(sollAnzV3);
-    console.log("Soll-Gesamt: " + sollAnz);
-    document.getElementById("sollGes").innerHTML=sollAnz;
-    ivlV3=ivl;
-    console.log("Intervall: " + ivlV3);
+function mqttAuftragV3(){
+    sollAnzV3+=4;
+    console.log("Auftrag Variante 2 angenommen");
+    document.getElementById("sollV3").innerHTML = sollAnzV3;
+    sollAnzV1-=4;
+    updateIvl(1);
+    zeitV3=7;
+    updateIvl(3);
     abfrageAuftragV3=true;
-    z=setInterval(function() {sollProZeit(3)},ivlV3);
+    let time = new Date();
+    time.setMinutes(time.getMinutes() + parseInt(10));
+    zeitEndeV3 = time.getTime();
+    timerAZ3=setInterval(function() {azTimer(3)},1000);
+    updateChart(sollAnzV3,istAnzV3,"erfuellungChartV3");
+    statusOn("Auftrag für Variante 2 (Losgröße: 4, Zeit: 7min) wurde erfolgreich angenommen!");
 }
