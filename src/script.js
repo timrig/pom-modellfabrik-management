@@ -180,7 +180,7 @@ function azTimer(v) {
     document.getElementById(timer).innerHTML = "Arbeitszeit: " + hour + ":" + minute + ":" + seconds;
     updateTimeChart(schichtTimer,zeit*60,v);
   }
-  if((ende - now)/1000<=0) {
+  else {
     if(v==1) {
         clearInterval(timerAZ);
     }
@@ -225,9 +225,10 @@ function auftragV1Btn() {
   abfrageAuftragV2=true;
   mqttPubAuftrag(2,sollAnzV2,ivlV2);
   let time = new Date();
-  time.setMinutes(time.getMinutes() + parseInt(zeitV2));
+  time.setMinutes(time.getMinutes() + parseInt(6));
   zeitEndeV2 = time.getTime();
   timerAZ2=setInterval(function() {azTimer(2)},1000);
+  updateChart(sollAnzV2,istAnzV2,"erfuellungChartV2");
   statusOn("Auftrag für Variante 1 (Losgröße: 2, Zeit: 6min) wurde erfolgreich angenommen!");
 }
 
@@ -242,9 +243,10 @@ function auftragV2Btn() {
   abfrageAuftragV3=true;
   mqttPubAuftrag(3,sollAnzV3,ivlV3);
   let time = new Date();
-  time.setMinutes(time.getMinutes() + parseInt(zeitV3));
+  time.setMinutes(time.getMinutes() + parseInt(10));
   zeitEndeV3 = time.getTime();
   timerAZ3=setInterval(function() {azTimer(3)},1000);
+  updateChart(sollAnzV3,istAnzV3,"erfuellungChartV3");
   statusOn("Auftrag für Variante 2 (Losgröße: 4, Zeit: 7min) wurde erfolgreich angenommen!");
 }
 
@@ -295,6 +297,7 @@ function sollProZeit(v) {
 function fertig(linie,variante) {
   if(variante==1) {
     istAnzV1++;
+    updateChart(sollAnz,istAnz,"erfuellungChart");
     if(linie==1 && dlzBufferFertig>0) {
       zeitR1[linie + "," + idStr]=0;
       dlz = (new Date().getTime()-dlzBufferFertig)/1000;
@@ -306,6 +309,7 @@ function fertig(linie,variante) {
   }
   else if(variante==2) {
     istAnzV2++;
+    updateChart(sollAnzV2,istAnzV2,"erfuellungChartV2");
     document.getElementById("istV2").innerHTML = istAnzV2;
     let now = new Date().getTime();
     if((zeitEndeV2 - now)/1000>0) {
@@ -319,6 +323,7 @@ function fertig(linie,variante) {
   }
   else if(variante==3) {
     istAnzV3++;
+    updateChart(sollAnzV3,istAnzV3,"erfuellungChartV3");
     document.getElementById("istV3").innerHTML = istAnzV3;
     let now = new Date().getTime();
     if((zeitEndeV3 - now)/1000>0) {
@@ -343,7 +348,6 @@ function datenAktualisierung() {
   document.getElementById("ausschussAnt").innerHTML = ausschussAnt + "&#037;";
   produkt();
   updateChart(ausschuss,istAnz,"ausschussAntChart");
-  updateChart(sollAnz,istAnz,"erfuellungChart");
   if(schichtende==false) sqlQuerySchichtUpdate(true);
 }
 

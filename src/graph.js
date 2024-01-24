@@ -16,7 +16,7 @@ function updateChart(x, y, chartID) {
   var data = {};
   if (chartID === "ausschussAntChart") {
     data = { "Ist": y, "Ausschuss": x };
-  } else if (chartID === "erfuellungChart") {
+  } else if (chartID === "erfuellungChart" || chartID === "erfuellungChartV2" || chartID === "erfuellungChartV3") {
     data = { "Ist": y, "Soll": x-y };
   } else if (chartID === "krankChart") {
     data = { "Personal": x-y, "Krankheit": y };
