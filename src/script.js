@@ -173,20 +173,15 @@ function azTimer(v) {
   if(minute < 10) minute = "0"+minute;
   if(seconds < 10) seconds = "0"+seconds;
   if(v==1) {
-    let timer;
-    if(v==1) timer="schichtTimer";
-    else if(v==2) timer="zeitV2";
-    else if(v==3) timer="zeitV3";
-    document.getElementById(timer).innerHTML = "Arbeitszeit: " + hour + ":" + minute + ":" + seconds;
-    updateChart(schichtTimer,zeit*60,v);
+    document.getElementById("schichtTimer").innerHTML = "Arbeitszeit: " + hour + ":" + minute + ":" + seconds;
+    if(Math.round(schichtTimer) <= (zeit*60)) updateTimeChart(schichtTimer,zeit*60,v);
   }
   if(v>1 && Math.round(schichtTimer) <= (zeit*60)) {
     let timer;
-    if(v==1) timer="schichtTimer";
-    else if(v==2) timer="zeitV2";
+    if(v==2) timer="zeitV2";
     else if(v==3) timer="zeitV3";
     document.getElementById(timer).innerHTML = "Arbeitszeit: " + hour + ":" + minute + ":" + seconds;
-    updateChart(schichtTimer,zeit*60,v);
+    updateTimeChart(schichtTimer,zeit*60,v);
   }
   else {
     if(v==2) {
