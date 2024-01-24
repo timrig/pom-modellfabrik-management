@@ -155,7 +155,7 @@ function azTimer(v) {
   let zeit;
   if(v==1) {
     ende = zeitEnde;
-    zeit = schichtzeit;
+    zeit = parseInt(schichtzeit);
   }
   else if(v==2) {
     ende = zeitEndeV2;
@@ -172,7 +172,7 @@ function azTimer(v) {
   if(hour < 10) hour = "0"+hour;
   if(minute < 10) minute = "0"+minute;
   if(seconds < 10) seconds = "0"+seconds;
-  if(schichtTimer <= zeit*60) {
+  if(schichtTimer <= (zeit*60)+1) {
     let timer;
     if(v==1) timer="schichtTimer";
     else if(v==2) timer="zeitV2";
@@ -181,10 +181,7 @@ function azTimer(v) {
     updateTimeChart(schichtTimer,zeit*60,v);
   }
   else {
-    if(v==1) {
-        clearInterval(timerAZ);
-    }
-    else if(v==2) {
+    if(v==2) {
         clearInterval(timerAZ2);
     }
     else if(v==3) {
@@ -196,7 +193,8 @@ function azTimer(v) {
 function updateIvl(v) {
   if(v==1) {
     if(x>0) clearInterval(x);
-    ivlV1=Math.round((schichtzeit/sollAnzV1)*60*1000);
+    let now = new Date().getTime();
+    ivlV1=Math.round((((zeitEnde-now)/1000)/(sollAnzV1-sollAnzV1ProZeit))*1000);
     sqlQuerySchichtUpdate(true);
     x=setInterval(function() {sollProZeit(1)},ivlV1);
   }
@@ -297,7 +295,6 @@ function sollProZeit(v) {
 function fertig(linie,variante) {
   if(variante==1) {
     istAnzV1++;
-    updateChart(sollAnz,istAnz,"erfuellungChart");
     if(linie==1 && dlzBufferFertig>0) {
       zeitR1[linie + "," + idStr]=0;
       dlz = (new Date().getTime()-dlzBufferFertig)/1000;
@@ -309,6 +306,7 @@ function fertig(linie,variante) {
   }
   else if(variante==2) {
     istAnzV2++;
+    if(istAnzV2==sollAnzV2) clearInterval(timerAZ2);
     updateChart(sollAnzV2,istAnzV2,"erfuellungChartV2");
     document.getElementById("istV2").innerHTML = istAnzV2;
     let now = new Date().getTime();
@@ -323,6 +321,7 @@ function fertig(linie,variante) {
   }
   else if(variante==3) {
     istAnzV3++;
+    if(istAnzV3==sollAnzV3) clearInterval(timerAZ3);
     updateChart(sollAnzV3,istAnzV3,"erfuellungChartV3");
     document.getElementById("istV3").innerHTML = istAnzV3;
     let now = new Date().getTime();
@@ -348,6 +347,7 @@ function datenAktualisierung() {
   document.getElementById("ausschussAnt").innerHTML = ausschussAnt + "&#037;";
   produkt();
   updateChart(ausschuss,istAnz,"ausschussAntChart");
+  updateChart(sollAnz,istAnz,"erfuellungChart");
   if(schichtende==false) sqlQuerySchichtUpdate(true);
 }
 

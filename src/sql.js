@@ -53,6 +53,7 @@ async function listFertig() {
     let tag = zeit.getDate();
     let datum = tag + "." + monat + "." + jahr;
     var filteredData = data.value.filter(item => item.Datum === datum);
+    console.log(filteredData);
     return filteredData;
 }
 
