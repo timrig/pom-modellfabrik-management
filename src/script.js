@@ -49,6 +49,7 @@ var timerAZ3=0;
 var schichtende=true;
 var abfrageAuftragV2=false;
 var abfrageAuftragV3=false;
+var abfrageUpdateParameter=false;
 var dlzBufferFertig;
 var dlzBufferAusschuss;
 var rowBufferFertig;
@@ -294,6 +295,7 @@ function sollProZeit(v) {
     document.getElementById("divEnde").style.display = "none";
     schichtAbfrage = false;
     clearInterval(t);
+    clearInterval(timerAZ);
     schichtende=true;
     sqlQuerySchichtUpdate(false);
   }
@@ -334,7 +336,7 @@ function fertig(linie,variante) {
     updateChart(sollAnzV3,istAnzV3,"erfuellungChartV3");
     document.getElementById("istV3").innerHTML = istAnzV3;
     let now = new Date().getTime();
-    if((zeitEndeV3 - now)/1000>3) {
+    if((zeitEndeV3 - now)/1000>=180) {
       istV3Plus++;
       document.getElementById("istV3Plus").innerHTML = istV3Plus;
     }
@@ -475,6 +477,7 @@ function durchZeiten(dlz) {
 
 //Paramter Personal, Krankheit und Unfallfrei updaten
 function updateBtn() {
+  abfrageUpdateParameter = true;
   let text="";
   if(document.getElementById("personal").value!=""){
     personal=document.getElementById("personal").value;
@@ -492,13 +495,14 @@ function updateBtn() {
     text+="Unfallfrei ";
   }
   personalVerf=((personal-krankheit)/personal*100).toFixed(2);
-  document.getElementById("personalVerf").innerHTML = personalVerf + "&#037;";updateTime: 
+  document.getElementById("personalVerf").innerHTML = personalVerf + "&#037;";
   updateChart(personal,krankheit,"krankChart");
   if(unfallfrei>0 && unfallfrei<=1) document.getElementById("unfallfreiSeit").innerHTML = unfallfrei + " Tag";
   if(unfallfrei>1) document.getElementById("unfallfreiSeit").innerHTML = unfallfrei + " Tagen";
   sqlQuerySchichtUpdate(true);
   text+=" erfolgreich aktualisiert!"
   statusOn(text);
+  mqttPubUpdateParameter();
 }
 
 function schichtEnde() {
@@ -514,6 +518,7 @@ function schichtEnde() {
     clearInterval(timerAZ2);
     clearInterval(timerAZ3);
     sqlQuerySchichtUpdate(false);
+    mqttPubSchichtende();
   }
 }
 
@@ -528,6 +533,7 @@ function reset() {
     clearInterval(timerAZ);
     clearInterval(timerAZ2);
     clearInterval(timerAZ3);
+    schichtAbfrage = false;
     istAnz=0,
     ausschuss=0,
     sollAnz=0,
@@ -558,6 +564,7 @@ function reset() {
     istV3Plus=0;
     istV3Minus=0;
     sqlQuerySchichtUpdate(false);
+    mqttPubReset();
     location.reload();
   }
 }

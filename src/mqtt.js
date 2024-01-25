@@ -22,6 +22,9 @@ const topic_dlzL112 = 'l1/dlz/1/2';
 const topic_dlzL122 = 'l1/dlz/2/2';
 const topic_auftragV2 = 'auftrag/v2';
 const topic_auftragV3 = 'auftrag/v3';
+const topic_schichtende = 'schichtende';
+const topic_reset = 'reset';
+const topic_updateParameterOrga = 'update/ParameterOrga';
 
 var mqttServer;
 var mqttUser;
@@ -79,6 +82,9 @@ function mqttSub(server,user,pw) {
         client.subscribe('l3/#');
         client.subscribe('rep/#');
         client.subscribe('auftrag/#');
+        client.subscribe('schichtende');
+        client.subscribe('reset');
+        client.subscribe('update/#');
     }
 
     function onConnectionLost(responseObject) {
@@ -171,6 +177,16 @@ function mqttSub(server,user,pw) {
                 mqttAuftragV3();
             }
         }
+        else if (message.destinationName === topic_schichtende && schichtAbfrage == true) {
+            mqttSchichtende();
+        }
+        else if (message.destinationName === topic_reset && schichtAbfrage == true) {
+            mqttReset();
+        }
+        else if (message.destinationName === topic_updateParameterOrga && abfrageUpdateParameter == false) {
+            mqttUpdateParameter();
+            abfrageUpdateParameter = false;
+        }
     }
     connect();
 }
@@ -238,4 +254,150 @@ function mqttAuftragV3(){
     timerAZ3=setInterval(function() {azTimer(3)},1000);
     updateChart(sollAnzV3,istAnzV3,"erfuellungChartV3");
     statusOn("Auftrag für Variante 2 (Losgröße: 4, Zeit: 7min) wurde erfolgreich angenommen!");
+}
+
+function mqttPubSchichtende() {
+    const host = mqttServer;
+    const port = 8884;
+    const clientId = 'mqtt_js_' + Math.random().toString(16).substr(2, 8);
+    const username = mqttUser;
+    const password = mqttPassword;
+
+    const client = new Paho.Client(host, port, clientId);
+
+    const connectOptions = {
+        onSuccess: onConnectPub,
+        userName: username,
+        password: password,
+        useSSL: true,
+    };
+    function connectPub() {
+        client.connect(connectOptions);
+    }
+
+    function onConnectPub() {
+        client.publish("schichtende", "schichtende");
+    }
+    connectPub();
+}
+
+function mqttSchichtende() {
+    schichtAbfrage = false;
+    document.getElementById("divStart").style.display = "block";
+    document.getElementById("divEnde").style.display = "none";
+    clearInterval(x);
+    clearInterval(y);
+    clearInterval(z);
+    clearInterval(timerAZ);
+    clearInterval(timerAZ2);
+    clearInterval(timerAZ3);
+}
+
+function mqttPubReset() {
+    const host = mqttServer;
+    const port = 8884;
+    const clientId = 'mqtt_js_' + Math.random().toString(16).substr(2, 8);
+    const username = mqttUser;
+    const password = mqttPassword;
+
+    const client = new Paho.Client(host, port, clientId);
+
+    const connectOptions = {
+        onSuccess: onConnectPub,
+        userName: username,
+        password: password,
+        useSSL: true,
+    };
+    function connectPub() {
+        client.connect(connectOptions);
+    }
+
+    function onConnectPub() {
+        client.publish("reset", "reset");
+    }
+    connectPub();
+}
+
+function mqttReset() {
+    console.log("Reset!");
+    clearInterval(x);
+    clearInterval(y);
+    clearInterval(z);
+    clearInterval(timerAZ);
+    clearInterval(timerAZ2);
+    clearInterval(timerAZ3);
+    schichtAbfrage = false;
+    istAnz=0,
+    ausschuss=0,
+    sollAnz=0,
+    sollAnzV1=0,
+    sollAnzV2=0,
+    sollAnzV3=0,
+    sollAnzProZeit=0,
+    sollAnzV1ProZeit=0,
+    sollAnzV2ProZeit=0,
+    sollAnzV3ProZeit=0,
+    ivlV1=0,
+    ivlV2=0,
+    ivlV3=0,
+    min=1,
+    unfallfrei=0,
+    krankheit=0,
+    personal=0,
+    istAnzV1=0,
+    istAnzV2=0,
+    istAnzV3=0,
+    durchZeitMW=0,
+    schichtzeit=0,
+    zeitEnde=0,
+    zeitEndeV2=0;
+    zeitEndeV3=0;
+    istV2Plus=0;
+    istV2Minus=0;
+    istV3Plus=0;
+    istV3Minus=0;
+    location.reload();
+}
+
+function mqttPubUpdateParameter() {
+    const host = mqttServer;
+    const port = 8884;
+    const clientId = 'mqtt_js_' + Math.random().toString(16).substr(2, 8);
+    const username = mqttUser;
+    const password = mqttPassword;
+
+    const client = new Paho.Client(host, port, clientId);
+
+    const connectOptions = {
+        onSuccess: onConnectPub,
+        userName: username,
+        password: password,
+        useSSL: true,
+    };
+    function connectPub() {
+        client.connect(connectOptions);
+    }
+
+    function onConnectPub() {
+        client.publish("updateParameter", "updateParameter");
+    }
+    connectPub();
+}
+
+async function mqttUpdateParameter() {
+    const id = 1;
+    const endpoint = `/data-api/rest/Schicht/ID`;
+    const response = await fetch(`${endpoint}/${id}`);
+    const result = await response.json();
+    personal=result.value[0].MitarbeiterProSchicht;
+    krankheit=result.value[0].Krankheitsfälle;
+    unfallfrei=result.value[0].Unfallfrei;
+    document.getElementById("soll3").innerHTML=personal;
+    document.getElementById("soll4").innerHTML=krankheit;
+    document.getElementById("soll5").innerHTML=unfallfrei;
+    personalVerf=((personal-krankheit)/personal*100).toFixed(2);
+    document.getElementById("personalVerf").innerHTML = personalVerf + "&#037;";
+    if(unfallfrei>0 && unfallfrei<=1) document.getElementById("unfallfreiSeit").innerHTML = unfallfrei + " Tag";
+    if(unfallfrei>1) document.getElementById("unfallfreiSeit").innerHTML = unfallfrei + " Tagen";
+    updateChart(personal,krankheit,"krankChart");
 }
