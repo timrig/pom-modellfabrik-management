@@ -58,7 +58,8 @@ var abfrageDLZ=false;
 var zeitEnde;
 var zeitEndeV2;
 var zeitEndeV3;
-var schichtAbfrage;
+var schichtAbfrage=false;
+var resetAbfrage=false;
 var istV2Plus;
 var istV2Minus;
 var istV3Plus;
@@ -89,65 +90,70 @@ function startBtn() {
       alert("Bitte alle Parameter festlegen!");
     }
     else {
-      istAnz=0;
-      istAnzV1=0;
-      istAnzV2=0;
-      istAnzV3=0;
-      sollAnzV2=0;
-      sollAnzV3=0;
-      ausschuss=0;
-      teileAnzMin=0;
-      sollAnzProZeit=0;
-      sollAnzV1ProZeit=0;
-      sollAnzV2ProZeit=0;
-      sollAnzV3ProZeit=0;
-      istV2Plus=0;
-      istV2Minus=0;
-      istV3Plus=0;
-      istV3Minus=0;
-      document.getElementById("istAnzZeit").innerHTML=teileAnzMin;
-      document.getElementById("istAnz").innerHTML=istAnz;
-      document.getElementById("ausschussAnt").innerHTML="0&#037;";
-      document.getElementById("istGes").innerHTML=istAnz;
-      document.getElementById("sollAnz").innerHTML="0";
-      document.getElementById("sollGes").innerHTML=sollAnz;
-      document.getElementById("prod").innerHTML="0&#037;";
-      document.getElementById("istV2Plus").innerHTML = istV2Plus;
-      document.getElementById("istV2Minus").innerHTML = istV2Minus;
-      document.getElementById("istV3Plus").innerHTML = istV3Plus;
-      document.getElementById("istV3Minus").innerHTML = istV3Minus;
-      document.getElementById("istV2").innerHTML=istAnzV2;
-      document.getElementById("sollV2").innerHTML=sollAnzV2;
-      document.getElementById("istV3").innerHTML=istAnzV3;
-      document.getElementById("sollV3").innerHTML=sollAnzV3;
-      updateChart(ausschuss,1,"ausschussAntChart");
-      updateChart(sollAnz,istAnz,"erfuellungChart");
-      if(sollAnzV2 > 0 && zeitV2 > 0) {
-        updateIvl(2);
-      }
-      else {
-        sollAnzV2=0;
-        ivlV2=0;
-      }
-      if(sollAnzV3 > 0 && zeitV3 > 0) {
-        updateIvl(3);
-      }
-      else {
-        sollAnzV3=0;
-        ivlV3=0;
-      }
-      let time = new Date();
-      time.setMinutes(time.getMinutes() + parseInt(schichtzeit));
-      zeitEnde = time.getTime();
-      timerAZ=setInterval(function() {azTimer(1)},1000);
-      t=setInterval(teileProMin,60*1000);
-      updateIvl(1);
-      console.log("Schicht gestartet!");
-      statusOn("Die Schicht wurde erfolgreich gestartet!");
-      document.getElementById("divStart").style.display = "none";
-      document.getElementById("divEnde").style.display = "block";
+      startSchicht();
     }
   }
+  mqttPubStart(sollAnzV1,schichtzeit);
+}
+
+function startSchicht() {
+  istAnz=0;
+  istAnzV1=0;
+  istAnzV2=0;
+  istAnzV3=0;
+  sollAnzV2=0;
+  sollAnzV3=0;
+  ausschuss=0;
+  teileAnzMin=0;
+  sollAnzProZeit=0;
+  sollAnzV1ProZeit=0;
+  sollAnzV2ProZeit=0;
+  sollAnzV3ProZeit=0;
+  istV2Plus=0;
+  istV2Minus=0;
+  istV3Plus=0;
+  istV3Minus=0;
+  document.getElementById("istAnzZeit").innerHTML=teileAnzMin;
+  document.getElementById("istAnz").innerHTML=istAnz;
+  document.getElementById("ausschussAnt").innerHTML="0&#037;";
+  document.getElementById("istGes").innerHTML=istAnz;
+  document.getElementById("sollAnz").innerHTML="0";
+  document.getElementById("sollGes").innerHTML=sollAnz;
+  document.getElementById("prod").innerHTML="0&#037;";
+  document.getElementById("istV2Plus").innerHTML = istV2Plus;
+  document.getElementById("istV2Minus").innerHTML = istV2Minus;
+  document.getElementById("istV3Plus").innerHTML = istV3Plus;
+  document.getElementById("istV3Minus").innerHTML = istV3Minus;
+  document.getElementById("istV2").innerHTML=istAnzV2;
+  document.getElementById("sollV2").innerHTML=sollAnzV2;
+  document.getElementById("istV3").innerHTML=istAnzV3;
+  document.getElementById("sollV3").innerHTML=sollAnzV3;
+  updateChart(ausschuss,1,"ausschussAntChart");
+  updateChart(sollAnz,istAnz,"erfuellungChart");
+  if(sollAnzV2 > 0 && zeitV2 > 0) {
+    updateIvl(2);
+  }
+  else {
+    sollAnzV2=0;
+    ivlV2=0;
+  }
+  if(sollAnzV3 > 0 && zeitV3 > 0) {
+    updateIvl(3);
+  }
+  else {
+    sollAnzV3=0;
+    ivlV3=0;
+  }
+  let time = new Date();
+  time.setMinutes(time.getMinutes() + parseInt(schichtzeit));
+  zeitEnde = time.getTime();
+  timerAZ=setInterval(function() {azTimer(1)},1000);
+  t=setInterval(teileProMin,60*1000);
+  updateIvl(1);
+  console.log("Schicht gestartet!");
+  statusOn("Die Schicht wurde erfolgreich gestartet!");
+  document.getElementById("divStart").style.display = "none";
+  document.getElementById("divEnde").style.display = "block";
 }
 
 function azTimer(v) {
@@ -199,11 +205,12 @@ function updateIvl(v) {
   let ende;
   let zeit;
   if(v==1) {
-    ende = zeitEnde;
+    ende = parseInt(zeitEnde);
     zeit = parseInt(schichtzeit);
     let schichtTimer=zeit*60000-(ende - now);
     if(x>0) clearInterval(x);
     ivlV1=Math.round((zeit*60000-schichtTimer)/(sollAnzV1-sollAnzV1ProZeit));
+    console.log(ende,zeit,ivlV1);
     sqlQuerySchichtUpdate(true);
     x=setInterval(function() {sollProZeit(1)},ivlV1);
   }
@@ -230,7 +237,7 @@ function auftragV1Btn() {
   zeitV2=6;
   updateIvl(2);
   abfrageAuftragV2=true;
-  mqttPubAuftrag(2,zeitEnde);
+  mqttPubAuftrag(2,ivlV1);
   let time = new Date();
   time.setMinutes(time.getMinutes() + parseInt(6));
   zeitEndeV2 = time.getTime();
@@ -248,7 +255,7 @@ function auftragV2Btn() {
   zeitV3=7;
   updateIvl(3);
   abfrageAuftragV3=true;
-  mqttPubAuftrag(3,zeitEnde);
+  mqttPubAuftrag(3,ivlV1);
   let time = new Date();
   time.setMinutes(time.getMinutes() + parseInt(10));
   zeitEndeV3 = time.getTime();
@@ -525,6 +532,8 @@ function reset() {
   let text = "Sollen die Daten wirklich zurückgesetzt werden?";
   if (confirm(text) == true) {
     schichtEnde();
+    resetAbfrage = true;
+    mqttPubReset();
     console.log("Reset!");
     clearInterval(x);
     clearInterval(y);
@@ -532,7 +541,6 @@ function reset() {
     clearInterval(timerAZ);
     clearInterval(timerAZ2);
     clearInterval(timerAZ3);
-    schichtAbfrage = false;
     istAnz=0,
     ausschuss=0,
     sollAnz=0,
@@ -563,8 +571,7 @@ function reset() {
     istV3Plus=0;
     istV3Minus=0;
     sqlQuerySchichtUpdate(false);
-    mqttPubReset();
-    location.reload();
+    setTimeout(location.reload.bind(location), 1000);
   }
 }
 

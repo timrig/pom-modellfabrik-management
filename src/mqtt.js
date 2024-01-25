@@ -25,6 +25,7 @@ const topic_auftragV3 = 'auftrag/v3';
 const topic_schichtende = 'schichtende';
 const topic_reset = 'reset';
 const topic_updateParameterOrga = 'updateParameter';
+const topic_start = 'start';
 
 var mqttServer;
 var mqttUser;
@@ -85,6 +86,7 @@ function mqttSub(server,user,pw) {
         client.subscribe('schichtende');
         client.subscribe('reset');
         client.subscribe('updateParameter');
+        client.subscribe('start');
     }
 
     function onConnectionLost(responseObject) {
@@ -98,6 +100,7 @@ function mqttSub(server,user,pw) {
 
     function onMessageArrived(message) {
         console.log('Nachricht empfangen: ' + message.payloadString);
+        console.log(schichtAbfrage);
         if(message.payloadString==topic_fertigL1V1) {
             fertig(1,1);
         }
@@ -170,26 +173,33 @@ function mqttSub(server,user,pw) {
             var nachrichtArray=nachricht.split(",");
             if(nachrichtArray[0]==2 && abfrageAuftragV2==false) {
                 console.log("MQTT Auftrag 2 angenommen");
-                zeitEnde = nachrichtArray[1];
+                ivlV1 = nachrichtArray[1];
                 mqttAuftragV2();
             }
             else if(nachrichtArray[0]==3 && abfrageAuftragV3==false) {
                 console.log("MQTT Auftrag 3 angenommen");
-                zeitEnde = nachrichtArray[1];
+                ivlV1 = nachrichtArray[1];
                 mqttAuftragV3();
             }
             abfrageAuftragV2 = false;
             abfrageAuftragV3 = false;
         }
-        else if (message.destinationName === topic_schichtende && schichtAbfrage == true) {
+        else if (message.payloadString == topic_schichtende && schichtAbfrage == true) {
             mqttSchichtende();
         }
-        else if (message.destinationName === topic_reset && schichtAbfrage == true) {
+        else if (message.payloadString == topic_reset && resetAbfrage == false) {
             mqttReset();
         }
-        else if (message.destinationName === topic_updateParameterOrga && abfrageUpdateParameter == false) {
+        else if (message.payloadString == topic_updateParameterOrga && abfrageUpdateParameter == false) {
             mqttUpdateParameter();
             abfrageUpdateParameter = false;
+        }
+        else if (message.destinationName == topic_start && schichtAbfrage == false) {
+            var nachricht=String(message.payloadString);
+            var nachrichtArray=nachricht.split(",");
+            sollAnzV1=nachrichtArray[0];
+            schichtzeit=nachrichtArray[1];
+            mqttStart();
         }
     }
     connect();
@@ -231,8 +241,10 @@ function mqttAuftragV2(){
     console.log("Auftrag Variante 1 angenommen");
     document.getElementById("sollV2").innerHTML = sollAnzV2;
     sollAnzV1-=2;
-    updateIvl(1);
     zeitV2=6;
+    if(x>0) clearInterval(x);
+    console.log(ivlV1);
+    x=setInterval(function() {sollProZeit(1)},ivlV1);
     updateIvl(2);
     let time = new Date();
     time.setMinutes(time.getMinutes() + parseInt(6));
@@ -247,8 +259,10 @@ function mqttAuftragV3(){
     console.log("Auftrag Variante 2 angenommen");
     document.getElementById("sollV3").innerHTML = sollAnzV3;
     sollAnzV1-=4;
-    updateIvl(1);
     zeitV3=7;
+    if(x>0) clearInterval(x);
+    console.log(ivlV1);
+    x=setInterval(function() {sollProZeit(1)},ivlV1);
     updateIvl(3);
     let time = new Date();
     time.setMinutes(time.getMinutes() + parseInt(10));
@@ -358,7 +372,7 @@ function mqttReset() {
     istV2Minus=0;
     istV3Plus=0;
     istV3Minus=0;
-    location.reload();
+    setTimeout(location.reload.bind(location), 1000);
 }
 
 function mqttPubUpdateParameter() {
@@ -402,4 +416,38 @@ async function mqttUpdateParameter() {
     if(unfallfrei>0 && unfallfrei<=1) document.getElementById("unfallfreiSeit").innerHTML = unfallfrei + " Tag";
     if(unfallfrei>1) document.getElementById("unfallfreiSeit").innerHTML = unfallfrei + " Tagen";
     updateChart(personal,krankheit,"krankChart");
+}
+
+function mqttPubStart(anz,zeit) {
+    const host = mqttServer;
+    const port = 8884;
+    const clientId = 'mqtt_js_' + Math.random().toString(16).substr(2, 8);
+    const username = mqttUser;
+    const password = mqttPassword;
+
+    const client = new Paho.Client(host, port, clientId);
+
+    const connectOptions = {
+        onSuccess: onConnectPub,
+        userName: username,
+        password: password,
+        useSSL: true,
+    };
+    function connectPub() {
+        client.connect(connectOptions);
+    }
+
+    function onConnectPub() {
+        var messagePub = anz + "," + zeit;
+        client.publish("start", messagePub);
+    }
+    connectPub();
+}
+
+function mqttStart() {
+    schichtAbfrage = true;
+    document.getElementById("soll1").innerHTML=sollAnzV1;
+    sollAnz=parseInt(sollAnzV1);
+    document.getElementById("soll2").innerHTML=schichtzeit;
+    startSchicht();
 }
