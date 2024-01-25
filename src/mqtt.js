@@ -24,7 +24,7 @@ const topic_auftragV2 = 'auftrag/v2';
 const topic_auftragV3 = 'auftrag/v3';
 const topic_schichtende = 'schichtende';
 const topic_reset = 'reset';
-const topic_updateParameterOrga = 'update/ParameterOrga';
+const topic_updateParameterOrga = 'updateParameter';
 
 var mqttServer;
 var mqttUser;
@@ -84,7 +84,7 @@ function mqttSub(server,user,pw) {
         client.subscribe('auftrag/#');
         client.subscribe('schichtende');
         client.subscribe('reset');
-        client.subscribe('update/#');
+        client.subscribe('updateParameter');
     }
 
     function onConnectionLost(responseObject) {
@@ -170,12 +170,16 @@ function mqttSub(server,user,pw) {
             var nachrichtArray=nachricht.split(",");
             if(nachrichtArray[0]==2 && abfrageAuftragV2==false) {
                 console.log("MQTT Auftrag 2 angenommen");
+                zeitEnde = nachrichtArray[1];
                 mqttAuftragV2();
             }
             else if(nachrichtArray[0]==3 && abfrageAuftragV3==false) {
                 console.log("MQTT Auftrag 3 angenommen");
+                zeitEnde = nachrichtArray[1];
                 mqttAuftragV3();
             }
+            abfrageAuftragV2 = false;
+            abfrageAuftragV3 = false;
         }
         else if (message.destinationName === topic_schichtende && schichtAbfrage == true) {
             mqttSchichtende();
@@ -191,7 +195,7 @@ function mqttSub(server,user,pw) {
     connect();
 }
 
-function mqttPubAuftrag(v,soll,ivl) {
+function mqttPubAuftrag(v,zeit) {
     const host = mqttServer;
     const port = 8884;
     const clientId = 'mqtt_js_' + Math.random().toString(16).substr(2, 8);
@@ -211,7 +215,7 @@ function mqttPubAuftrag(v,soll,ivl) {
     }
 
     function onConnectPub() {
-        var messagePub = v + "," + soll + "," + ivl;
+        var messagePub = v + "," + zeit;
         if(v==2) {
             client.publish("auftrag/v2", messagePub);
         }
@@ -230,7 +234,6 @@ function mqttAuftragV2(){
     updateIvl(1);
     zeitV2=6;
     updateIvl(2);
-    abfrageAuftragV2=true;
     let time = new Date();
     time.setMinutes(time.getMinutes() + parseInt(6));
     zeitEndeV2 = time.getTime();
@@ -247,7 +250,6 @@ function mqttAuftragV3(){
     updateIvl(1);
     zeitV3=7;
     updateIvl(3);
-    abfrageAuftragV3=true;
     let time = new Date();
     time.setMinutes(time.getMinutes() + parseInt(10));
     zeitEndeV3 = time.getTime();

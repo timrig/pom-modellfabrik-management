@@ -201,9 +201,7 @@ function updateIvl(v) {
   if(v==1) {
     ende = zeitEnde;
     zeit = parseInt(schichtzeit);
-  }
-  let schichtTimer=zeit*60000-(ende - now);
-  if(v==1) {
+    let schichtTimer=zeit*60000-(ende - now);
     if(x>0) clearInterval(x);
     ivlV1=Math.round((zeit*60000-schichtTimer)/(sollAnzV1-sollAnzV1ProZeit));
     sqlQuerySchichtUpdate(true);
@@ -232,7 +230,7 @@ function auftragV1Btn() {
   zeitV2=6;
   updateIvl(2);
   abfrageAuftragV2=true;
-  mqttPubAuftrag(2,sollAnzV2,ivlV2);
+  mqttPubAuftrag(2,zeitEnde);
   let time = new Date();
   time.setMinutes(time.getMinutes() + parseInt(6));
   zeitEndeV2 = time.getTime();
@@ -250,7 +248,7 @@ function auftragV2Btn() {
   zeitV3=7;
   updateIvl(3);
   abfrageAuftragV3=true;
-  mqttPubAuftrag(3,sollAnzV3,ivlV3);
+  mqttPubAuftrag(3,zeitEnde);
   let time = new Date();
   time.setMinutes(time.getMinutes() + parseInt(10));
   zeitEndeV3 = time.getTime();
@@ -526,6 +524,7 @@ function schichtEnde() {
 function reset() {
   let text = "Sollen die Daten wirklich zurückgesetzt werden?";
   if (confirm(text) == true) {
+    schichtEnde();
     console.log("Reset!");
     clearInterval(x);
     clearInterval(y);
